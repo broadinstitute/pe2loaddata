@@ -65,15 +65,16 @@ def main():
 
     tmpdir = tempfile.mkdtemp()
 
-    with open(os.path.join(tmpdir, 'illum.csv'), "w") as fd:
-        writer = csv.writer(fd)
+    with open(os.path.join(tmpdir, 'illum.csv'), 'wb') as fd:
+        writer = csv.writer(fd, lineterminator='\n')
         write_csv(writer, channels, options.illum_directory, options.plate_id, nrows)
 
     os.system('paste -d "," {} {} > {}'.format(options.input_csv, 
         os.path.join(tmpdir, 'illum.csv'), 
         options.output_csv
     ))
-    shutil.rmtree(tmpdir)
+    print(tmpdir)
+    #shutil.rmtree(tmpdir)
 
 def write_csv(writer, channels, illum_directory, plate_id, nrows):
     header = sum([["_Illum".join((prefix, channel.replace("Orig", ""))) for prefix in 

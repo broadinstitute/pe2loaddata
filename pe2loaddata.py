@@ -239,8 +239,8 @@ def main():
         for filename in os.listdir(options.index_directory):
             paths[filename] = options.index_directory
             
-    with open(options.output_csv, "w") as fd:
-        writer = csv.writer(fd)
+    with open(options.output_csv, "wb") as fd:
+        writer = csv.writer(fd, lineterminator='\n')
         write_csv(writer, images, plates, wells, channels, metadata, paths)
 
 def write_csv(writer, images, plates, wells, channels, metadata, paths):
