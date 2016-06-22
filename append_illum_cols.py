@@ -73,8 +73,7 @@ def main():
         os.path.join(tmpdir, 'illum.csv'), 
         options.output_csv
     ))
-    print(tmpdir)
-    #shutil.rmtree(tmpdir)
+    shutil.rmtree(tmpdir)
 
 def write_csv(writer, channels, illum_directory, plate_id, nrows):
     header = sum([["_Illum".join((prefix, channel.replace("Orig", ""))) for prefix in 
