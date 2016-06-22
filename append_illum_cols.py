@@ -5,6 +5,9 @@ import argparse
 import csv
 import os
 import sys
+import shutil
+import subprocess
+import tempfile
 import yaml
 
            
@@ -22,7 +25,7 @@ def check_dir_arg(arg):
             "%s is not a path to an existing directory" % arg)
     return arg
 
- def parse_args():
+def parse_args():
     parser = argparse.ArgumentParser(
         description = "Append columns corresponding to illumination "
         "functions to a LoadData .csv")
@@ -39,8 +42,11 @@ def check_dir_arg(arg):
         help = "The config.yaml file that chooses channels and"
         " metadata for the CSV")
     parser.add_argument(
-        "output_csv", type = check_file_arg,
+        "input_csv", type = check_file_arg,
         help = "The name of the LoadData .csv file to be manipulated")
+    parser.add_argument(
+        "output_csv", 
+        help = "The name of the LoadData .csv file to be created after appending")
     return parser.parse_args()
 
 def load_config(config_file):
@@ -49,30 +55,35 @@ def load_config(config_file):
         config = yaml.load(fd)
     if isinstance(config, list):
         config = config[0]
-    illum_channels = config['illum_channels']
-    return channels, metadata
+    channels = config['channels']
+    return channels
     
 def main():
     options = parse_args()
-    channels, metadata = load_config(options.config_file)
+    channels = load_config(options.config_file)
+    nrows = sum(1 for line in open(options.input_csv)) - 1
 
-    # change this to a proper temporary file
-    with open(options.output_csv+".tmp", "wb") as fd:
+    tmpdir = tempfile.mkdtemp()
+
+    with open(os.path.join(tmpdir, 'illum.csv'), "wb") as fd:
         writer = csv.writer(fd)
-        write_csv(writer, illum_channels, options.illum_directory, options.plate_id)
+        write_csv(writer, channels, options.illum_directory, options.plate_id, nrows)
 
-def write_csv(writer, illum_channels, illum_directory, plate_id):
-    header = sum([["_".join((prefix, illum_channels[channel])) for prefix in 
+    os.system('paste -d "," {} {} > {}'.format(options.input_csv, 
+        os.path.join(tmpdir, 'illum.csv'), 
+        options.output_csv
+    ))
+    shutil.rmtree(tmpdir)
+
+def write_csv(writer, channels, illum_directory, plate_id, nrows):
+    header = sum([["_Illum".join((prefix, channel.replace("Orig", ""))) for prefix in 
                    "FileName", "PathName"]
-                   for channel in sorted(illum_channels.keys())], [])
+                   for channel in sorted(channels.values())], [])
     writer.writerow(header)
-    row = sum([["_".join((prefix, illum_channels[channel])) for prefix in 
-                   "FileName", "PathName"]
-                   for channel in sorted(illum_channels.keys())], [])
-    writer.writerow(row)
 
-    #SQ00015201_IllumAGP.mat
-
+    row = sum([[plate_id + '_Illum' + channel + '.mat', illum_directory] for 
+        channel in  sorted(channels.values())], [])
+    writer.writerows([row] * nrows)
                 
 if __name__ == "__main__":
     main()
