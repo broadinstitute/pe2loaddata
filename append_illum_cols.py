@@ -1,165 +1,13 @@
-"""append_illum_cols - Append columns corresponding to illumination functions to a .CSV for LoadData
+"""append_illum_cols - Append columns corresponding to illumination functions to a LoadData .csv
 
 """
 import argparse
 import csv
 import os
 import sys
-import xml.sax
-import xml.sax.handler
 import yaml
 
-class PEContentHandler(xml.sax.ContentHandler):
-    '''Ignore all content until endElement'''
-    def __init__(self, parent, name, attrs):
-        self.parent = parent
-        self.name = name
-        self.content = ""
-        self.metadata = dict(attrs)
-        
-    def onStartElement(self, name, attrs):
-        return self.get_class_for_name(name)(self, name, attrs)
-    
-    def characters(self, content):
-        self.content += content.strip()
-    
-    def endElement(self, name):
-        self.parent.onEndElement(self, name)
-        return self.parent
-    
-    def onEndElement(self, child, name):
-        self.metadata[name] = child.content
-    
-    def get_class_for_name(self, name):
-        return PEContentHandler
-
-    @property
-    def id(self):
-        return self.metadata["id"]
-    
-    @property
-    def well_name(self):
-        '''The well name
-        
-        Taken from row and column metadata values, valid for Well and Image
-        elements
-        '''
-        row = int(self.metadata["Row"])
-        col = int(self.metadata["Col"])
-        return chr(ord('A')+row-1)+ ("%02d" % col)
-    
-    
-class Well(PEContentHandler):
-    def __init__(self, parent, name, attrs):
-        PEContentHandler.__init__(self, parent, name, attrs)
-        self.image_ids = []
-
-    def onEndElement(self, child, name):
-        if name == "Image":
-            self.image_ids.append(child.id)
-        return PEContentHandler.onEndElement(self, child, name)
-    
-class Wells(PEContentHandler):
-    def __init__(self, parent, name, attrs):
-        PEContentHandler.__init__(self, parent, name, attrs)
-        self.wells = {}
-
-    def onEndElement(self, child, name):
-        if name == "Well":
-            self.wells[child.id] = child
-        return PEContentHandler.onEndElement(self, child, name)
-
-    def get_class_for_name(self, name):
-        if name == "Well":
-            return Well
-        return PEContentHandler.get_class_for_name(self, name)
-            
-class Plate(PEContentHandler):
-    def __init__(self, parent, name, attrs):
-        PEContentHandler.__init__(self, parent, name, attrs)
-        self.well_ids = []
-        
-    def onEndElement(self, child, name):
-        if name == "Well":
-            self.well_ids.append(child.id)
-        else:
-            PEContentHandler.onEndElement(self, child, name)
-        
-class Plates(PEContentHandler):
-    def __init__(self, parent, name, attrs):
-        PEContentHandler.__init__(self, parent, name, attrs)
-        self.plates = {}
-        
-    def onEndElement(self, child, name):
-        if name == "Plate":
-            self.plates[child.metadata.get("Name")] = child
-        else:
-            PEContentHandler.onEndElement(self, child, name)
-            
-    def get_class_for_name(self, name):
-        if name == "Plate":
-            return Plate
-        
-class Images(PEContentHandler):
-    def __init__(self, parent, name, attrs):
-        PEContentHandler.__init__(self, parent, name, attrs)
-        self.images = {}
-        
-    def onEndElement(self, child, name):
-        if name == "Image":
-            self.images[child.id] = child
-        else:
-            PEContentHandler.onEndElement(self, child, name)
-    
-class Root(PEContentHandler):
-    def __init__(self, parent, name, attrs):
-        PEContentHandler.__init__(self, parent, name, attrs)
-        self.images = None
-        self.plates = None
-        self.wells = None
-        
-    def onEndElement(self, child, name):
-        if name == "Images":
-            self.images = child
-        elif name == "Plates":
-            self.plates = child
-        elif name == "Wells":
-            self.wells = child
-        else:
-            PEContentHandler.onEndElement(self, child, name)
-            
-    def get_class_for_name(self, name):
-        if name == "Plates":
-            return Plates
-        elif name == "Wells":
-            return Wells
-        elif name == "Images":
-            return Images
-        else:
-            return PEContentHandler.get_class_for_name(self, name)
-        
-class DocContentHandler(xml.sax.ContentHandler):
-    def startDocument(self):
-        self.root = None
-        
-    def startElement(self, name, attrs):
-        if self.root is None:
-            self.root = Root(self, name, attrs)
-            self.current_element = self.root
-        else:
-            self.current_element = self.current_element.onStartElement(
-                name, attrs)
-        
-    def characters(self, content):
-        self.current_element.characters(content)
-        
-    def endElement(self, name):
-        self.current_element.endElement(name)
-        self.current_element = self.current_element.parent
-        
-    def onEndElement(self, child, name):
-        pass
-        
+           
 def check_file_arg(arg):
     '''Make sure the argument is a path to a file'''
     if not os.path.isfile(arg):
@@ -174,28 +22,25 @@ def check_dir_arg(arg):
             "%s is not a path to an existing directory" % arg)
     return arg
 
-def parse_args():
+ def parse_args():
     parser = argparse.ArgumentParser(
-        description = "Convert a Phenix index.idx.xml file to a LoadData .csv")
+        description = "Append columns corresponding to illumination "
+        "functions to a LoadData .csv")
+
+    parser.add_argument("--plate-id",
+                        dest = "plate_id",
+                        help = "Plate ID")
     parser.add_argument(
-        "--search-subdirectories", action = "store_true",
-        dest = "search_subdirectories",
-        help="Look for image files in the index-directory and subdirectories")
-    parser.add_argument("--index-file", type = check_file_arg,
-                        dest = "index_file",
-                        help = "The Phenix index XML metadata file")
-    parser.add_argument(
-        "--index-directory", type=check_dir_arg,
-        dest = "index_directory",
-        default = os.path.curdir,
-        help = "The directory containing the index file and images")
+        "--illum-directory", type=check_dir_arg,
+        dest = "illum_directory",
+        help = "The directory containing the illumination functions")
     parser.add_argument(
         "config_file", type = check_file_arg,
         help = "The config.yaml file that chooses channels and"
         " metadata for the CSV")
     parser.add_argument(
-        "output_csv", 
-        help = "The name of the LoadData .csv file to be created")
+        "output_csv", type = check_file_arg,
+        help = "The name of the LoadData .csv file to be manipulated")
     return parser.parse_args()
 
 def load_config(config_file):
@@ -204,72 +49,30 @@ def load_config(config_file):
         config = yaml.load(fd)
     if isinstance(config, list):
         config = config[0]
-    channels = config['channels']
-    metadata = config.get('metadata', {})
+    illum_channels = config['illum_channels']
     return channels, metadata
     
 def main():
     options = parse_args()
     channels, metadata = load_config(options.config_file)
-    if not options.index_file:
-        options.index_file = os.path.join(options.index_directory,
-                                          "Index.idx.xml")
-    doc = DocContentHandler()
-    xml.sax.parse(options.index_file, doc)
-    images = doc.root.images.images
-    plates = doc.root.plates.plates
-    wells = doc.root.wells.wells
-    paths = {}
-    if options.search_subdirectories:
-        for dir_root, directories, filenames in os.walk(
-            options.index_directory):
-            for filename in filenames:
-                if filename.endswith(".tiff"):
-                    paths[filename] = dir_root
-    else:
-        for filename in os.listdir(options.index_directory):
-            paths[filename] = options.index_directory
-            
-    with open(options.output_csv, "wb") as fd:
-        writer = csv.writer(fd)
-        write_csv(writer, images, plates, wells, channels, metadata, paths)
 
-def write_csv(writer, images, plates, wells, channels, metadata, paths):
-    header = sum([["_".join((prefix, channels[channel])) for prefix in 
+    # change this to a proper temporary file
+    with open(options.output_csv+".tmp", "wb") as fd:
+        writer = csv.writer(fd)
+        write_csv(writer, illum_channels, options.illum_directory, options.plate_id)
+
+def write_csv(writer, illum_channels, illum_directory, plate_id):
+    header = sum([["_".join((prefix, illum_channels[channel])) for prefix in 
                    "FileName", "PathName"]
-                   for channel in sorted(channels.keys())], [])
-    header += ["Metadata_Plate", "Metadata_Well", "Metadata_Site"]
-    header += ["_".join(("Metadata", metadata[key])) 
-               for key in sorted(metadata.keys())]
+                   for channel in sorted(illum_channels.keys())], [])
     writer.writerow(header)
-    for plate_name in sorted(plates):
-        plate = plates[plate_name]
-        for well_id in plate.well_ids:
-            well = wells[well_id]
-            fields = {}
-            well_name = well.well_name
-            for image_id in well.image_ids:
-                image = images.get(image_id)
-                if image is not None:
-                    field_id = int(image.metadata["FieldID"])
-                    channel = image.metadata["ChannelName"]
-                    if channel not in channels:
-                        continue
-                    if field_id not in fields:
-                        fields[field_id] = { channel: image }
-                    else:
-                        fields[field_id][channel] = image
-            for field in sorted(fields):
-                d = fields[field]
-                row = []
-                for channel in sorted(channels.keys()):
-                    image = d[channel]
-                    file_name = image.metadata["URL"]
-                    row += [file_name, paths[file_name]]
-                row += [plate_name, well_name, str(field)]
-                for key in sorted(metadata.keys()):
-                    row.append(image.metadata[key])
-                writer.writerow(row)
+    row = sum([["_".join((prefix, illum_channels[channel])) for prefix in 
+                   "FileName", "PathName"]
+                   for channel in sorted(illum_channels.keys())], [])
+    writer.writerow(row)
+
+    #SQ00015201_IllumAGP.mat
+
                 
 if __name__ == "__main__":
     main()
