@@ -11,12 +11,22 @@ The config.yml file lets you name the channels you want to save and lets you pul
 
     channels:
         HOECHST 33342: DNA
-        Alexa 568: Actin
-        Alexa 647: Golgi
-        Alexa 488: Mito
-
+        Alexa 488: ER 
+        488 long: RNA
+        Alexa 568: AGP
+        Alexa 647: Mito
+        
     metadata:
-        AbsPositionZ: Z
+        Row: Row
+        Col: Col
+        FieldID: FieldID
+        ImageResolutionX: ImageResolutionX
+        ImageResolutionY: ImageResolutionY
+        BinningX: BinningX
+        BinningY: BinningY
+        AbsTime: AbsTime
+        AbsPositionZ: AbsPositionZ
+        ObjectiveMagnification: ObjectiveMagnification
 
 In the above example, "HOECHST 33342" is the label for the DNA channel and
 if you load the .csv file in LoadData, you will get an image named "DNA" in
