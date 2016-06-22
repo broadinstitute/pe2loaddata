@@ -17,6 +17,9 @@ import sys
 import xml.sax
 import xml.sax.handler
 import yaml
+import logging
+import logging.config
+
 
 class PEContentHandler(xml.sax.ContentHandler):
     '''Ignore all content until endElement'''
@@ -218,6 +221,11 @@ def load_config(config_file):
     return channels, metadata
     
 def main():
+    import json
+
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "logging_config.json")) as f:
+        logging.config.dictConfig(json.load(f))
+
     options = parse_args()
     channels, metadata = load_config(options.config_file)
     if not options.index_file:
@@ -244,6 +252,9 @@ def main():
         write_csv(writer, images, plates, wells, channels, metadata, paths)
 
 def write_csv(writer, images, plates, wells, channels, metadata, paths):
+    logger = logging.getLogger(__name__)
+
+
     header = sum([["_".join((prefix, channels[channel])) for prefix in 
                    "FileName", "PathName"]
                    for channel in sorted(channels.keys())], [])
@@ -272,8 +283,17 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
                 d = fields[field]
                 row = []
                 for channel in sorted(channels.keys()):
-                    image = d[channel]
+                    try:
+                        image = d[channel]
+                    except Exception, e:
+                        logger.debug("Channel = {}; Field = {}; Well = {}; Plate = {}".format(channel, field, well_name, plate_name))
+                        #import IPython; IPython.embed()
                     file_name = image.metadata["URL"]
+                    # file_name_generated =  u'r{}c{}f{:02}p01-ch{}sk1fk1fl1.tiff'.format(well_id[0:2], well_id[2:4], field, channel_id)
+                    # try:
+                    #     assert file_name == file_name_generated
+                    # except Exception, e:
+                    #     import IPython; IPython.embed()
                     row += [file_name, paths[file_name]]
                 row += [plate_name, well_name, str(field)]
                 for key in sorted(metadata.keys()):
