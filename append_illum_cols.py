@@ -65,7 +65,7 @@ def main():
 
     tmpdir = tempfile.mkdtemp()
 
-    with open(os.path.join(tmpdir, 'illum.csv'), "wb") as fd:
+    with open(os.path.join(tmpdir, 'illum.csv'), "w") as fd:
         writer = csv.writer(fd)
         write_csv(writer, channels, options.illum_directory, options.plate_id, nrows)
 
