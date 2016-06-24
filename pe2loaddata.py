@@ -17,6 +17,9 @@ import sys
 import xml.sax
 import xml.sax.handler
 import yaml
+import logging
+import logging.config
+import IPython
 
 class PEContentHandler(xml.sax.ContentHandler):
     '''Ignore all content until endElement'''
@@ -56,8 +59,17 @@ class PEContentHandler(xml.sax.ContentHandler):
         row = int(self.metadata["Row"])
         col = int(self.metadata["Col"])
         return chr(ord('A')+row-1)+ ("%02d" % col)
-    
-    
+
+    @property
+    def channel_name(self):
+        '''The channel name
+
+        Strip out spaces in the channel name because XML parser seems to
+        be broken
+        '''
+        channel = self.metadata["ChannelName"]
+        return channel.replace(" ","")
+
 class Well(PEContentHandler):
     def __init__(self, parent, name, attrs):
         PEContentHandler.__init__(self, parent, name, attrs)
@@ -218,8 +230,19 @@ def load_config(config_file):
     return channels, metadata
     
 def main():
+    import json
+
+    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "logging_config.json")) as f:
+        logging.config.dictConfig(json.load(f))
+
     options = parse_args()
     channels, metadata = load_config(options.config_file)
+    # Strip spaces because XML parser is broken
+    try:
+        channels = dict([(k.replace(" ", ""), v) for (k, v) in channels.items()])
+    except:
+        IPython.embed()
+
     if not options.index_file:
         options.index_file = os.path.join(options.index_directory,
                                           "Index.idx.xml")
@@ -240,10 +263,13 @@ def main():
             paths[filename] = options.index_directory
             
     with open(options.output_csv, "wb") as fd:
-        writer = csv.writer(fd)
+        writer = csv.writer(fd, lineterminator='\n')
         write_csv(writer, images, plates, wells, channels, metadata, paths)
 
 def write_csv(writer, images, plates, wells, channels, metadata, paths):
+    logger = logging.getLogger(__name__)
+
+
     header = sum([["_".join((prefix, channels[channel])) for prefix in 
                    "FileName", "PathName"]
                    for channel in sorted(channels.keys())], [])
@@ -258,21 +284,29 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
             fields = {}
             well_name = well.well_name
             for image_id in well.image_ids:
-                image = images.get(image_id)
-                if image is not None:
+                try:
+                    image = images[image_id]
                     field_id = int(image.metadata["FieldID"])
-                    channel = image.metadata["ChannelName"]
-                    if channel not in channels:
-                        continue
+                    channel = image.channel_name
+                    assert channel in channels
                     if field_id not in fields:
                         fields[field_id] = { channel: image }
                     else:
                         fields[field_id][channel] = image
+                except Exception, e:
+                    print e
+                    IPython.embed()
             for field in sorted(fields):
                 d = fields[field]
                 row = []
                 for channel in sorted(channels.keys()):
-                    image = d[channel]
+                    try:
+                        image = d[channel]
+                    except Exception, e:
+                        logger.debug("Channel = {}; Field = {}; Well = {}; Well_id = {}; Plate = {}".format(
+                                channel, field, well_name, well_id, plate_name))
+                        print e
+                        IPython.embed()
                     file_name = image.metadata["URL"]
                     row += [file_name, paths[file_name]]
                 row += [plate_name, well_name, str(field)]
