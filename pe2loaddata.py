@@ -19,7 +19,7 @@ import xml.sax.handler
 import yaml
 import logging
 import logging.config
-
+import IPython
 
 class PEContentHandler(xml.sax.ContentHandler):
     '''Ignore all content until endElement'''
@@ -59,8 +59,17 @@ class PEContentHandler(xml.sax.ContentHandler):
         row = int(self.metadata["Row"])
         col = int(self.metadata["Col"])
         return chr(ord('A')+row-1)+ ("%02d" % col)
-    
-    
+
+    @property
+    def channel_name(self):
+        '''The channel name
+
+        Strip out spaces in the channel name because XML parser seems to
+        be broken
+        '''
+        channel = self.metadata["ChannelName"]
+        return channel.replace(" ","")
+
 class Well(PEContentHandler):
     def __init__(self, parent, name, attrs):
         PEContentHandler.__init__(self, parent, name, attrs)
@@ -228,6 +237,12 @@ def main():
 
     options = parse_args()
     channels, metadata = load_config(options.config_file)
+    # Strip spaces because XML parser is broken
+    try:
+        channels = dict([(k.replace(" ", ""), v) for (k, v) in channels.items()])
+    except:
+        IPython.embed()
+
     if not options.index_file:
         options.index_file = os.path.join(options.index_directory,
                                           "Index.idx.xml")
@@ -269,16 +284,18 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
             fields = {}
             well_name = well.well_name
             for image_id in well.image_ids:
-                image = images.get(image_id)
-                if image is not None:
+                try:
+                    image = images[image_id]
                     field_id = int(image.metadata["FieldID"])
-                    channel = image.metadata["ChannelName"]
-                    if channel not in channels:
-                        continue
+                    channel = image.channel_name
+                    assert channel in channels
                     if field_id not in fields:
                         fields[field_id] = { channel: image }
                     else:
                         fields[field_id][channel] = image
+                except Exception, e:
+                    print e
+                    IPython.embed()
             for field in sorted(fields):
                 d = fields[field]
                 row = []
@@ -286,14 +303,11 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
                     try:
                         image = d[channel]
                     except Exception, e:
-                        logger.debug("Channel = {}; Field = {}; Well = {}; Plate = {}".format(channel, field, well_name, plate_name))
-                        #import IPython; IPython.embed()
+                        logger.debug("Channel = {}; Field = {}; Well = {}; Well_id = {}; Plate = {}".format(
+                                channel, field, well_name, well_id, plate_name))
+                        print e
+                        IPython.embed()
                     file_name = image.metadata["URL"]
-                    # file_name_generated =  u'r{}c{}f{:02}p01-ch{}sk1fk1fl1.tiff'.format(well_id[0:2], well_id[2:4], field, channel_id)
-                    # try:
-                    #     assert file_name == file_name_generated
-                    # except Exception, e:
-                    #     import IPython; IPython.embed()
                     row += [file_name, paths[file_name]]
                 row += [plate_name, well_name, str(field)]
                 for key in sorted(metadata.keys()):
