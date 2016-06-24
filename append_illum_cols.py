@@ -81,7 +81,7 @@ def write_csv(writer, channels, illum_directory, plate_id, nrows):
                    for channel in sorted(channels.values())], [])
     writer.writerow(header)
 
-    row = sum([[plate_id + '_Illum' + channel + '.mat', illum_directory] for 
+    row = sum([[plate_id + '_Illum' + channel.replace("Orig", "") + '.mat', illum_directory] for 
         channel in  sorted(channels.values())], [])
     writer.writerows([row] * nrows)
                 
