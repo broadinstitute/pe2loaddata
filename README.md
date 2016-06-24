@@ -10,13 +10,34 @@ where <index-directory> is the directory containing the Index.idx.xml file and t
 The config.yml file lets you name the channels you want to save and lets you pull metadata out of the image. An example:
 
     channels:
-        HOECHST 33342: DNA
-        Alexa 568: Actin
-        Alexa 647: Golgi
-        Alexa 488: Mito
-
+        HOECHST 33342: OrigDNA
+        Alexa 568: OrigAGP
+        Alexa 647: OrigMito
+        Alexa 488: OrigER
+        488 long: OrigRNA
     metadata:
-        AbsPositionZ: Z
+        Row: Row
+        Col: Col
+        FieldID: FieldID
+        ChannelID: ChannelID
+        ChannelName: ChannelName
+        ImageResolutionX: ImageResolutionX
+        ImageResolutionY: ImageResolutionY
+        ImageSizeX: ImageSizeX
+        ImageSizeY: ImageSizeY
+        BinningX: BinningX
+        BinningY: BinningY
+        MaxIntensity: MaxIntensity
+        PositionX: PositionX
+        PositionY: PositionY
+        PositionZ: PositionZ
+        AbsPositionZ: AbsPositionZ
+        AbsTime: AbsTime
+        MainExcitationWavelength: MainExcitationWavelength
+        MainEmissionWavelength: MainEmissionWavelength
+        ObjectiveMagnification: ObjectiveMagnification
+        ObjectiveNA: ObjectiveNA
+        ExposureTime: ExposureTime
 
 In the above example, "HOECHST 33342" is the label for the DNA channel and
 if you load the .csv file in LoadData, you will get an image named "DNA" in
