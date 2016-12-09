@@ -76,9 +76,8 @@ def main():
     shutil.rmtree(tmpdir)
 
 def write_csv(writer, channels, illum_directory, plate_id, nrows):
-    header = sum([["_Illum".join((prefix, channel.replace("Orig", ""))) for prefix in 
-                   "FileName", "PathName"]
-                   for channel in sorted(channels.values())], [])
+    header = sum([["_Illum".join((prefix, channel.replace("Orig", ""))) for prefix in ["FileName", "PathName"]] for channel in sorted(channels.values())], [])
+
     writer.writerow(header)
 
     row = sum([[plate_id + '_Illum' + channel.replace("Orig", "") + '.mat', illum_directory] for 
