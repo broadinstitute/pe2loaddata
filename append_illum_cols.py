@@ -10,7 +10,7 @@ import subprocess
 import tempfile
 import yaml
 
-           
+
 def check_file_arg(arg):
     '''Make sure the argument is a path to a file'''
     if not os.path.isfile(arg):
@@ -45,7 +45,7 @@ def parse_args():
         "input_csv", type = check_file_arg,
         help = "The name of the LoadData .csv file to be manipulated")
     parser.add_argument(
-        "output_csv", 
+        "output_csv",
         help = "The name of the LoadData .csv file to be created after appending")
     return parser.parse_args()
 
@@ -57,7 +57,7 @@ def load_config(config_file):
         config = config[0]
     channels = config['channels']
     return channels
-    
+
 def main():
     options = parse_args()
     channels = load_config(options.config_file)
@@ -69,8 +69,8 @@ def main():
         writer = csv.writer(fd, lineterminator='\n')
         write_csv(writer, channels, options.illum_directory, options.plate_id, nrows)
 
-    os.system('paste -d "," {} {} > {}'.format(options.input_csv, 
-        os.path.join(tmpdir, 'illum.csv'), 
+    os.system('paste -d "," {} {} > {}'.format(options.input_csv,
+        os.path.join(tmpdir, 'illum.csv'),
         options.output_csv
     ))
     shutil.rmtree(tmpdir)
@@ -80,9 +80,9 @@ def write_csv(writer, channels, illum_directory, plate_id, nrows):
 
     writer.writerow(header)
 
-    row = sum([[plate_id + '_Illum' + channel.replace("Orig", "") + '.mat', illum_directory] for 
+    row = sum([[plate_id + '_Illum' + channel.replace("Orig", "") + '.mat', illum_directory] for
         channel in  sorted(channels.values())], [])
     writer.writerows([row] * nrows)
-                
+
 if __name__ == "__main__":
     main()
