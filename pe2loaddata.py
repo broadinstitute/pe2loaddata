@@ -5,7 +5,7 @@ The YAML syntax is:
 channels:
    DNA: Hoechst
    GFP: Phalloidin
-   
+
 metadata:
    PositionX=SiteXPosition
    PositionY=SiteYPosition
@@ -28,31 +28,31 @@ class PEContentHandler(xml.sax.ContentHandler):
         self.name = name
         self.content = ""
         self.metadata = dict(attrs)
-        
+
     def onStartElement(self, name, attrs):
         return self.get_class_for_name(name)(self, name, attrs)
-    
+
     def characters(self, content):
         self.content += content.strip()
-    
+
     def endElement(self, name):
         self.parent.onEndElement(self, name)
         return self.parent
-    
+
     def onEndElement(self, child, name):
         self.metadata[name] = child.content
-    
+
     def get_class_for_name(self, name):
         return PEContentHandler
 
     @property
     def id(self):
         return self.metadata["id"]
-    
+
     @property
     def well_name(self):
         '''The well name
-        
+
         Taken from row and column metadata values, valid for Well and Image
         elements
         '''
@@ -79,7 +79,7 @@ class Well(PEContentHandler):
         if name == "Image":
             self.image_ids.append(child.id)
         return PEContentHandler.onEndElement(self, child, name)
-    
+
 class Wells(PEContentHandler):
     def __init__(self, parent, name, attrs):
         PEContentHandler.__init__(self, parent, name, attrs)
@@ -94,51 +94,51 @@ class Wells(PEContentHandler):
         if name == "Well":
             return Well
         return PEContentHandler.get_class_for_name(self, name)
-            
+
 class Plate(PEContentHandler):
     def __init__(self, parent, name, attrs):
         PEContentHandler.__init__(self, parent, name, attrs)
         self.well_ids = []
-        
+
     def onEndElement(self, child, name):
         if name == "Well":
             self.well_ids.append(child.id)
         else:
             PEContentHandler.onEndElement(self, child, name)
-        
+
 class Plates(PEContentHandler):
     def __init__(self, parent, name, attrs):
         PEContentHandler.__init__(self, parent, name, attrs)
         self.plates = {}
-        
+
     def onEndElement(self, child, name):
         if name == "Plate":
             self.plates[child.metadata.get("Name")] = child
         else:
             PEContentHandler.onEndElement(self, child, name)
-            
+
     def get_class_for_name(self, name):
         if name == "Plate":
             return Plate
-        
+
 class Images(PEContentHandler):
     def __init__(self, parent, name, attrs):
         PEContentHandler.__init__(self, parent, name, attrs)
         self.images = {}
-        
+
     def onEndElement(self, child, name):
         if name == "Image":
             self.images[child.id] = child
         else:
             PEContentHandler.onEndElement(self, child, name)
-    
+
 class Root(PEContentHandler):
     def __init__(self, parent, name, attrs):
         PEContentHandler.__init__(self, parent, name, attrs)
         self.images = None
         self.plates = None
         self.wells = None
-        
+
     def onEndElement(self, child, name):
         if name == "Images":
             self.images = child
@@ -148,7 +148,7 @@ class Root(PEContentHandler):
             self.wells = child
         else:
             PEContentHandler.onEndElement(self, child, name)
-            
+
     def get_class_for_name(self, name):
         if name == "Plates":
             return Plates
@@ -158,11 +158,11 @@ class Root(PEContentHandler):
             return Images
         else:
             return PEContentHandler.get_class_for_name(self, name)
-        
+
 class DocContentHandler(xml.sax.ContentHandler):
     def startDocument(self):
         self.root = None
-        
+
     def startElement(self, name, attrs):
         if self.root is None:
             self.root = Root(self, name, attrs)
@@ -170,17 +170,17 @@ class DocContentHandler(xml.sax.ContentHandler):
         else:
             self.current_element = self.current_element.onStartElement(
                 name, attrs)
-        
+
     def characters(self, content):
         self.current_element.characters(content)
-        
+
     def endElement(self, name):
         self.current_element.endElement(name)
         self.current_element = self.current_element.parent
-        
+
     def onEndElement(self, child, name):
         pass
-        
+
 def check_file_arg(arg):
     '''Make sure the argument is a path to a file'''
     if not os.path.isfile(arg):
@@ -215,7 +215,7 @@ def parse_args():
         help = "The config.yaml file that chooses channels and"
         " metadata for the CSV")
     parser.add_argument(
-        "output_csv", 
+        "output_csv",
         help = "The name of the LoadData .csv file to be created")
     return parser.parse_args()
 
@@ -228,7 +228,7 @@ def load_config(config_file):
     channels = config['channels']
     metadata = config.get('metadata', {})
     return channels, metadata
-    
+
 def main():
     import json
 
@@ -261,7 +261,7 @@ def main():
     else:
         for filename in os.listdir(options.index_directory):
             paths[filename] = options.index_directory
-            
+
     with open(options.output_csv, "wb") as fd:
         writer = csv.writer(fd, lineterminator='\n')
         write_csv(writer, images, plates, wells, channels, metadata, paths)
@@ -270,11 +270,11 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
     logger = logging.getLogger(__name__)
 
 
-    header = sum([["_".join((prefix, channels[channel])) for prefix in 
+    header = sum([["_".join((prefix, channels[channel])) for prefix in
                    "FileName", "PathName"]
                    for channel in sorted(channels.keys())], [])
     header += ["Metadata_Plate", "Metadata_Well", "Metadata_Site"]
-    header += ["_".join(("Metadata", metadata[key])) 
+    header += ["_".join(("Metadata", metadata[key]))
                for key in sorted(metadata.keys())]
     writer.writerow(header)
     for plate_name in sorted(plates):
@@ -313,6 +313,6 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
                 for key in sorted(metadata.keys()):
                     row.append(image.metadata[key])
                 writer.writerow(row)
-                
+
 if __name__ == "__main__":
     main()
