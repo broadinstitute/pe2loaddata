@@ -239,7 +239,7 @@ def main():
     channels, metadata = load_config(options.config_file)
     # Strip spaces because XML parser is broken
     try:
-        channels = dict([(k.replace(" ", ""), v) for (k, v) in channels.items()])
+        channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
     except:
         IPython.embed()
 
