@@ -302,13 +302,13 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
                 for channel in sorted(channels.keys()):
                     try:
                         image = d[channel]
+                        file_name = image.metadata["URL"]
+                        row += [file_name, paths[file_name]]
                     except Exception, e:
                         logger.debug("Channel = {}; Field = {}; Well = {}; Well_id = {}; Plate = {}".format(
                                 channel, field, well_name, well_id, plate_name))
                         print e
                         IPython.embed()
-                    file_name = image.metadata["URL"]
-                    row += [file_name, paths[file_name]]
                 row += [plate_name, well_name, str(field)]
                 for key in sorted(metadata.keys()):
                     row.append(image.metadata[key])
