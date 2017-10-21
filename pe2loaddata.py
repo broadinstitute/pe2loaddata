@@ -312,7 +312,7 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
                         row = []
                         break
                 if row == []:
-                    break
+                    continue
                 row += [plate_name, well_name, str(field)]
                 for key in sorted(metadata.keys()):
                     row.append(image.metadata[key])
