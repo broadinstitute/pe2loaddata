@@ -308,7 +308,11 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
                         logger.debug("Channel = {}; Field = {}; Well = {}; Well_id = {}; Plate = {}".format(
                                 channel, field, well_name, well_id, plate_name))
                         print e
-                        IPython.embed()
+                        #IPython.embed()
+                        row = []
+                        break
+                if row == []:
+                    break
                 row += [plate_name, well_name, str(field)]
                 for key in sorted(metadata.keys()):
                     row.append(image.metadata[key])
