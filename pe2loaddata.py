@@ -227,7 +227,11 @@ def load_config(config_file):
         config = config[0]
     channels = config['channels']
     metadata = config.get('metadata', {})
-    return channels, metadata
+    planes=False
+    if 'PlaneID' in metadata.keys():
+        if int(metadata['PlaneID'])>1:
+            planes=True
+    return channels, metadata, planes
 
 def main():
     import json
@@ -236,7 +240,7 @@ def main():
         logging.config.dictConfig(json.load(f))
 
     options = parse_args()
-    channels, metadata = load_config(options.config_file)
+    channels, metadata, planes = load_config(options.config_file)
     # Strip spaces because XML parser is broken
     try:
         channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
@@ -264,9 +268,9 @@ def main():
 
     with open(options.output_csv, "wb") as fd:
         writer = csv.writer(fd, lineterminator='\n')
-        write_csv(writer, images, plates, wells, channels, metadata, paths)
+        write_csv(writer, images, plates, wells, channels, metadata, paths, planes)
 
-def write_csv(writer, images, plates, wells, channels, metadata, paths):
+def write_csv(writer, images, plates, wells, channels, metadata, paths, planes):
     logger = logging.getLogger(__name__)
 
 
@@ -286,7 +290,10 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
             for image_id in well.image_ids:
                 try:
                     image = images[image_id]
-                    field_id = int(image.metadata["FieldID"])
+                    if planes:
+                        field_id = '%02d-%02d' %(int(image.metadata["FieldID"]),int(image.metadata["PlaneID"]))
+                    else:
+                        field_id = int(image.metadata["FieldID"])
                     channel = image.channel_name
                     assert channel in channels
                     if field_id not in fields:
