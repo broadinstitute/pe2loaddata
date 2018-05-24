@@ -286,7 +286,7 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
             for image_id in well.image_ids:
                 try:
                     image = images[image_id]
-                    field_id = int(image.metadata["FieldID"])
+                    field_id = '%02d-%02d' %(int(image.metadata["FieldID"]), int(image.metadata.get("PlaneID", 1)))
                     channel = image.channel_name
                     assert channel in channels
                     if field_id not in fields:
@@ -313,7 +313,7 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
                         break
                 if row == []:
                     continue
-                row += [plate_name, well_name, str(field)]
+                row += [plate_name, well_name, str(int(field[:2]))]
                 for key in sorted(metadata.keys()):
                     row.append(image.metadata[key])
                 writer.writerow(row)
