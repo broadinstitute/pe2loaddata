@@ -320,7 +320,7 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths, planes):
                 if row == []:
                     continue
                 if planes:
-                    row += [plate_name, well_name, str(int(field[:2])]
+                    row += [plate_name, well_name, str(int(field[:2]))]
                 else:
                     row += [plate_name, well_name, str(field)]
                 for key in sorted(metadata.keys()):
