@@ -229,8 +229,7 @@ def load_config(config_file):
     metadata = config.get('metadata', {})
     planes=False
     if 'PlaneID' in metadata.keys():
-        if int(metadata['PlaneID'])>1:
-            planes=True
+        planes=True
     return channels, metadata, planes
 
 def main():
