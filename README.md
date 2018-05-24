@@ -19,6 +19,7 @@ The config.yml file lets you name the channels you want to save and lets you pul
         Row: Row
         Col: Col
         FieldID: FieldID
+        PlaneID: PlaneID
         ChannelID: ChannelID
         ChannelName: ChannelName
         ImageResolutionX: ImageResolutionX
@@ -46,3 +47,6 @@ your image set.
 The metadata section selects items out of the image metadata and allows
 you to rename them as metadata. In addition, pe2loaddata automatically
 populates the plate, well and site metadata entriess.
+
+pe2loaddata now supports experiments with multiple planes per field as long as the `PlaneID` field 
+has been set in the config file.
