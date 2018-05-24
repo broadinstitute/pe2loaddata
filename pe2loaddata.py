@@ -286,6 +286,9 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
             for image_id in well.image_ids:
                 try:
                     image = images[image_id]
+                    # For simplifying the code, field_id is defined as the combination of 
+                    # FieldID and PlaneID. Later, PlaneID is stripped out when actually 
+                    # writing out field_id.
                     field_id = '%02d-%02d' %(int(image.metadata["FieldID"]), int(image.metadata.get("PlaneID", 1)))
                     channel = image.channel_name
                     assert channel in channels
@@ -313,6 +316,7 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
                         break
                 if row == []:
                     continue
+                # strip out the PlaneID from field before writing the row
                 row += [plate_name, well_name, str(int(field[:2]))]
                 for key in sorted(metadata.keys()):
                     row.append(image.metadata[key])
