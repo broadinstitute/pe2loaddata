@@ -49,7 +49,7 @@ def parse_args():
         help = "The name of the LoadData .csv file to be created after appending")
     parser.add_argument(
         "illum_filetype", default = '.npy',
-        help = "The file type of the illum files- in CP2.X, this should be '.mat', in CP3.X '.npy')
+        help = "The file type of the illum files- in CP2.X, this should be '.mat', in CP3.X '.npy'")
     return parser.parse_args()
 
 def load_config(config_file):
