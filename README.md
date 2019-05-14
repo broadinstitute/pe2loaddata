@@ -53,4 +53,4 @@ has been set in the config file.
 
 As of 2019-05-14, running `append_illum_cols.py` will create CSVs where the illumination file name 
 ends in `.npy`, not `.mat`.  If you wish to continue CellProfiler 2.X compatibility, you can 
-explicitly pass `.mat` as an argument to `append_illum_cols.py`.    
+explicitly pass `--illum_filetype ".mat"` as an argument to `append_illum_cols.py`.    
