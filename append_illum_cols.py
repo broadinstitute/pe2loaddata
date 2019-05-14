@@ -42,14 +42,14 @@ def parse_args():
         help = "The config.yaml file that chooses channels and"
         " metadata for the CSV")
     parser.add_argument(
+        "--illum_filetype", default = '.npy', dest = 'illum_filetype',
+        help = "The file type of the illum files- in CP2.X, this should be '.mat', in CP3.X '.npy'")
+    parser.add_argument(
         "input_csv", type = check_file_arg,
         help = "The name of the LoadData .csv file to be manipulated")
     parser.add_argument(
         "output_csv",
         help = "The name of the LoadData .csv file to be created after appending")
-    parser.add_argument(
-        "illum_filetype", default = '.npy',
-        help = "The file type of the illum files- in CP2.X, this should be '.mat', in CP3.X '.npy'")
     return parser.parse_args()
 
 def load_config(config_file):
