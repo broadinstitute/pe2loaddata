@@ -47,6 +47,9 @@ def parse_args():
     parser.add_argument(
         "output_csv",
         help = "The name of the LoadData .csv file to be created after appending")
+    parser.add_argument(
+        "illum_filetype", default = '.npy',
+        help = "The file type of the illum files- in CP2.X, this should be '.mat', in CP3.X '.npy')
     return parser.parse_args()
 
 def load_config(config_file):
@@ -67,7 +70,7 @@ def main():
 
     with open(os.path.join(tmpdir, 'illum.csv'), 'wb') as fd:
         writer = csv.writer(fd, lineterminator='\n')
-        write_csv(writer, channels, options.illum_directory, options.plate_id, nrows)
+        write_csv(writer, channels, options.illum_directory, options.plate_id, nrows, options.illum_filetype)
 
     os.system('paste -d "," {} {} > {}'.format(options.input_csv,
         os.path.join(tmpdir, 'illum.csv'),
@@ -75,12 +78,12 @@ def main():
     ))
     shutil.rmtree(tmpdir)
 
-def write_csv(writer, channels, illum_directory, plate_id, nrows):
+def write_csv(writer, channels, illum_directory, plate_id, nrows, illum_filetype):
     header = sum([["_Illum".join((prefix, channel.replace("Orig", ""))) for prefix in ["FileName", "PathName"]] for channel in sorted(channels.values())], [])
 
     writer.writerow(header)
 
-    row = sum([[plate_id + '_Illum' + channel.replace("Orig", "") + '.mat', illum_directory] for
+    row = sum([[plate_id + '_Illum' + channel.replace("Orig", "") + illum_filetype, illum_directory] for
         channel in  sorted(channels.values())], [])
     writer.writerows([row] * nrows)
 
