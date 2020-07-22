@@ -1,5 +1,4 @@
-from . import item_handler
-from . import plate_handler
+from . import plate_handler, item_handler
 
 
 class PlatesHandler(item_handler.ItemHandler):

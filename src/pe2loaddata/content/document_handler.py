@@ -1,6 +1,6 @@
 import xml.sax
 
-from .root_handler import RootHandler
+from .item import RootHandler
 
 
 class DocumentHandler(xml.sax.handler.ContentHandler):

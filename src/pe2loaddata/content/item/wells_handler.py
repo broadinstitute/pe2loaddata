@@ -1,5 +1,4 @@
-from . import item_handler
-from . import well_handler
+from . import well_handler, item_handler
 
 
 class WellsHandler(item_handler.ItemHandler):

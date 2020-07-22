@@ -1,7 +1,4 @@
-from . import item_handler
-from . import images_handler
-from . import plates_handler
-from . import wells_handler
+from . import plates_handler, wells_handler, item_handler, images_handler
 
 
 class RootHandler(item_handler.ItemHandler):
