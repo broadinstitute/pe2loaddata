@@ -1,15 +1,15 @@
 import xml.sax
 
-from src.pe2loaddata.node import root_node
+from .root_handler import RootHandler
 
 
-class DocumentNode(xml.sax.handler.ContentHandler):
+class DocumentHandler(xml.sax.handler.ContentHandler):
     def startDocument(self):
         self.root = None
 
     def startElement(self, name, attrs):
         if self.root is None:
-            self.root = root_node.RootNode(self, name, attrs)
+            self.root = RootHandler(self, name, attrs)
             self.current_element = self.root
         else:
             self.current_element = self.current_element.onStartElement(

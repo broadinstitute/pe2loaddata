@@ -1,8 +1,8 @@
 import xml.sax.handler
 
 
-class ItemNode(xml.sax.handler.ContentHandler):
-    """Ignore all node until endElement"""
+class ItemHandler(xml.sax.handler.ContentHandler):
+    """Ignore all content until endElement"""
 
     def __init__(self, parent, name, attrs):
         super().__init__()
@@ -25,7 +25,7 @@ class ItemNode(xml.sax.handler.ContentHandler):
         self.metadata[name] = child.content
 
     def get_class_for_name(self, name):
-        return ItemNode
+        return ItemHandler
 
     @property
     def id(self):

@@ -1,12 +1,12 @@
-from . import item_node
-from . import images_node
-from . import plates_node
-from . import wells_node
+from . import item_handler
+from . import images_handler
+from . import plates_handler
+from . import wells_handler
 
 
-class RootNode(item_node.ItemNode):
+class RootHandler(item_handler.ItemHandler):
     def __init__(self, parent, name, attrs):
-        item_node.ItemNode.__init__(self, parent, name, attrs)
+        item_handler.ItemHandler.__init__(self, parent, name, attrs)
         self.images = None
         self.plates = None
         self.wells = None
@@ -19,14 +19,14 @@ class RootNode(item_node.ItemNode):
         elif name == "Wells":
             self.wells = child
         else:
-            item_node.ItemNode.onEndElement(self, child, name)
+            item_handler.ItemHandler.onEndElement(self, child, name)
 
     def get_class_for_name(self, name):
         if name == "Plates":
-            return plates_node.PlatesNode
+            return plates_handler.PlatesHandler
         elif name == "Wells":
-            return wells_node.WellsNode
+            return wells_handler.WellsHandler
         elif name == "Images":
-            return images_node.ImagesNode
+            return images_handler.ImagesHandler
         else:
-            return item_node.ItemNode.get_class_for_name(self, name)
+            return item_handler.ItemHandler.get_class_for_name(self, name)
