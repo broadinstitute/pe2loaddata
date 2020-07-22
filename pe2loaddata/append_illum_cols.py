@@ -4,10 +4,9 @@
 import argparse
 import csv
 import os
-import sys
 import shutil
-import subprocess
 import tempfile
+
 import yaml
 
 

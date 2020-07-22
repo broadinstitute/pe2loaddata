@@ -11,18 +11,18 @@ metadata:
    PositionY=SiteYPosition
 """
 import argparse
-import csv
-import os
-import sys
-import xml.sax
-import xml.sax.handler
-import yaml
 import logging
 import logging.config
-import IPython
+import os
+import xml.sax
+import xml.sax.handler
+
+import yaml
+
 
 class PEContentHandler(xml.sax.ContentHandler):
     '''Ignore all content until endElement'''
+
     def __init__(self, parent, name, attrs):
         self.parent = parent
         self.name = name
@@ -58,7 +58,7 @@ class PEContentHandler(xml.sax.ContentHandler):
         '''
         row = int(self.metadata["Row"])
         col = int(self.metadata["Col"])
-        return chr(ord('A')+row-1)+ ("%02d" % col)
+        return chr(ord('A') + row - 1) + ("%02d" % col)
 
     @property
     def channel_name(self):
@@ -68,7 +68,8 @@ class PEContentHandler(xml.sax.ContentHandler):
         be broken
         '''
         channel = self.metadata["ChannelName"]
-        return channel.replace(" ","")
+        return channel.replace(" ", "")
+
 
 class Well(PEContentHandler):
     def __init__(self, parent, name, attrs):
@@ -79,6 +80,7 @@ class Well(PEContentHandler):
         if name == "Image":
             self.image_ids.append(child.id)
         return PEContentHandler.onEndElement(self, child, name)
+
 
 class Wells(PEContentHandler):
     def __init__(self, parent, name, attrs):
@@ -95,6 +97,7 @@ class Wells(PEContentHandler):
             return Well
         return PEContentHandler.get_class_for_name(self, name)
 
+
 class Plate(PEContentHandler):
     def __init__(self, parent, name, attrs):
         PEContentHandler.__init__(self, parent, name, attrs)
@@ -105,6 +108,7 @@ class Plate(PEContentHandler):
             self.well_ids.append(child.id)
         else:
             PEContentHandler.onEndElement(self, child, name)
+
 
 class Plates(PEContentHandler):
     def __init__(self, parent, name, attrs):
@@ -121,6 +125,7 @@ class Plates(PEContentHandler):
         if name == "Plate":
             return Plate
 
+
 class Images(PEContentHandler):
     def __init__(self, parent, name, attrs):
         PEContentHandler.__init__(self, parent, name, attrs)
@@ -131,6 +136,7 @@ class Images(PEContentHandler):
             self.images[child.id] = child
         else:
             PEContentHandler.onEndElement(self, child, name)
+
 
 class Root(PEContentHandler):
     def __init__(self, parent, name, attrs):
@@ -159,6 +165,7 @@ class Root(PEContentHandler):
         else:
             return PEContentHandler.get_class_for_name(self, name)
 
+
 class DocContentHandler(xml.sax.ContentHandler):
     def startDocument(self):
         self.root = None
@@ -181,12 +188,14 @@ class DocContentHandler(xml.sax.ContentHandler):
     def onEndElement(self, child, name):
         pass
 
+
 def check_file_arg(arg):
     '''Make sure the argument is a path to a file'''
     if not os.path.isfile(arg):
         raise argparse.ArgumentTypeError(
             "%s is not a path to an existing file" % arg)
     return arg
+
 
 def check_dir_arg(arg):
     '''Make sure the argument is a path to an existing directory'''
@@ -195,29 +204,31 @@ def check_dir_arg(arg):
             "%s is not a path to an existing directory" % arg)
     return arg
 
+
 def parse_args():
     parser = argparse.ArgumentParser(
-        description = "Convert a Phenix index.idx.xml file to a LoadData .csv")
+        description="Convert a Phenix index.idx.xml file to a LoadData .csv")
     parser.add_argument(
-        "--search-subdirectories", action = "store_true",
-        dest = "search_subdirectories",
+        "--search-subdirectories", action="store_true",
+        dest="search_subdirectories",
         help="Look for image files in the index-directory and subdirectories")
-    parser.add_argument("--index-file", type = check_file_arg,
-                        dest = "index_file",
-                        help = "The Phenix index XML metadata file")
+    parser.add_argument("--index-file", type=check_file_arg,
+                        dest="index_file",
+                        help="The Phenix index XML metadata file")
     parser.add_argument(
         "--index-directory", type=check_dir_arg,
-        dest = "index_directory",
-        default = os.path.curdir,
-        help = "The directory containing the index file and images")
+        dest="index_directory",
+        default=os.path.curdir,
+        help="The directory containing the index file and images")
     parser.add_argument(
-        "config_file", type = check_file_arg,
-        help = "The config.yaml file that chooses channels and"
-        " metadata for the CSV")
+        "config_file", type=check_file_arg,
+        help="The config.yaml file that chooses channels and"
+             " metadata for the CSV")
     parser.add_argument(
         "output_csv",
-        help = "The name of the LoadData .csv file to be created")
+        help="The name of the LoadData .csv file to be created")
     return parser.parse_args()
+
 
 def load_config(config_file):
     '''Load the configuration from config.yaml'''
@@ -229,53 +240,14 @@ def load_config(config_file):
     metadata = config.get('metadata', {})
     return channels, metadata
 
-def main():
-    import json
-
-    with open(os.path.join(os.path.dirname(os.path.realpath(__file__)), "logging_config.json")) as f:
-        logging.config.dictConfig(json.load(f))
-
-    options = parse_args()
-    channels, metadata = load_config(options.config_file)
-    # Strip spaces because XML parser is broken
-    try:
-        channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
-    except:
-        IPython.embed()
-
-    if not options.index_file:
-        options.index_file = os.path.join(options.index_directory,
-                                          "Index.idx.xml")
-    doc = DocContentHandler()
-    xml.sax.parse(options.index_file, doc)
-    images = doc.root.images.images
-    plates = doc.root.plates.plates
-    wells = doc.root.wells.wells
-    paths = {}
-    if options.search_subdirectories:
-        for dir_root, directories, filenames in os.walk(
-            options.index_directory):
-            for filename in filenames:
-                if filename.endswith(".tiff"):
-                    paths[filename] = dir_root
-    else:
-        for filename in os.listdir(options.index_directory):
-            paths[filename] = options.index_directory
-
-    with open(options.output_csv, "wb") as fd:
-        writer = csv.writer(fd, lineterminator='\n')
-        write_csv(writer, images, plates, wells, channels, metadata, paths)
 
 def write_csv(writer, images, plates, wells, channels, metadata, paths):
     logger = logging.getLogger(__name__)
 
+    header = sum([["_".join((prefix, channels[channel])) for prefix in ["FileName", "PathName"]] for channel in sorted(channels.keys())], [])
 
-    header = sum([["_".join((prefix, channels[channel])) for prefix in
-                   "FileName", "PathName"]
-                   for channel in sorted(channels.keys())], [])
     header += ["Metadata_Plate", "Metadata_Well", "Metadata_Site"]
-    header += ["_".join(("Metadata", metadata[key]))
-               for key in sorted(metadata.keys())]
+    header += ["_".join(("Metadata", metadata[key])) for key in sorted(metadata.keys())]
     writer.writerow(header)
     for plate_name in sorted(plates):
         plate = plates[plate_name]
@@ -286,19 +258,18 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
             for image_id in well.image_ids:
                 try:
                     image = images[image_id]
-                    # For simplifying the code, field_id is defined as the combination of 
-                    # FieldID and PlaneID. Later, PlaneID is stripped out when actually 
+                    # For simplifying the code, field_id is defined as the combination of
+                    # FieldID and PlaneID. Later, PlaneID is stripped out when actually
                     # writing out field_id.
-                    field_id = '%02d-%02d' %(int(image.metadata["FieldID"]), int(image.metadata.get("PlaneID", 1)))
+                    field_id = '%02d-%02d' % (int(image.metadata["FieldID"]), int(image.metadata.get("PlaneID", 1)))
                     channel = image.channel_name
                     assert channel in channels
                     if field_id not in fields:
-                        fields[field_id] = { channel: image }
+                        fields[field_id] = {channel: image}
                     else:
                         fields[field_id][channel] = image
-                except Exception, e:
-                    print e
-                    IPython.embed()
+                except Exception as e:
+                    print(e)
             for field in sorted(fields):
                 d = fields[field]
                 row = []
@@ -307,20 +278,18 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
                         image = d[channel]
                         file_name = image.metadata["URL"]
                         row += [file_name, paths[file_name]]
-                    except Exception, e:
-                        logger.debug("Channel = {}; Field = {}; Well = {}; Well_id = {}; Plate = {}".format(
-                                channel, field, well_name, well_id, plate_name))
-                        print e
-                        #IPython.embed()
+                    except Exception as e:
+                        logger.debug(
+                            "Channel = {}; Field = {}; Well = {}; Well_id = {}; Plate = {}".format(channel, field,
+                                                                                                   well_name, well_id,
+                                                                                                   plate_name))
+                        print(e)
                         row = []
                         break
-                if row == []:
+                if not row:
                     continue
                 # strip out the PlaneID from field before writing the row
                 row += [plate_name, well_name, str(int(field[:2]))]
                 for key in sorted(metadata.keys()):
                     row.append(image.metadata[key])
                 writer.writerow(row)
-
-if __name__ == "__main__":
-    main()
