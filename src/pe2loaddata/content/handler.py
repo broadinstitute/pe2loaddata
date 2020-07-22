@@ -3,7 +3,7 @@ import xml.sax
 from .item import RootHandler
 
 
-class DocumentHandler(xml.sax.handler.ContentHandler):
+class Handler(xml.sax.handler.ContentHandler):
     def startDocument(self):
         self.root = None
 

@@ -7,7 +7,7 @@ import json
 
 import pkg_resources
 
-import src.pe2loaddata.content.document_handler
+from . import content
 from . import pe2loaddata
 
 
@@ -29,14 +29,16 @@ def main():
     if not options.index_file:
         options.index_file = os.path.join(options.index_directory, "Index.idx.xml")
 
-    doc = src.pe2loaddata.content.document_handler.DocumentHandler()
+    handler = content.Handler()
 
-    xml.sax.parse(options.index_file, doc)
+    xml.sax.parse(options.index_file, handler)
 
-    images = doc.root.images.images
-    plates = doc.root.plates.plates
-    wells = doc.root.wells.wells
+    images = handler.root.images.images
+    plates = handler.root.plates.plates
+    wells = handler.root.wells.wells
+
     paths = {}
+
     if options.search_subdirectories:
         for dir_root, directories, filenames in os.walk(options.index_directory):
             for filename in filenames:

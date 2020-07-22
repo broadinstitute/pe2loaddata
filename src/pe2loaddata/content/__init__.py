@@ -1,2 +1,2 @@
-from .document_handler import DocumentHandler
+from .handler import Handler
 
