@@ -7,6 +7,7 @@ import json
 
 import pkg_resources
 
+import src.pe2loaddata.node.document_node
 from . import pe2loaddata
 
 
@@ -28,7 +29,7 @@ def main():
     if not options.index_file:
         options.index_file = os.path.join(options.index_directory, "Index.idx.xml")
 
-    doc = pe2loaddata.DocContentHandler()
+    doc = src.pe2loaddata.node.document_node.DocumentNode()
     xml.sax.parse(options.index_file, doc)
     images = doc.root.images.images
     plates = doc.root.plates.plates
