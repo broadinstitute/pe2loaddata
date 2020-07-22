@@ -1,12 +1,12 @@
-from . import node
+from . import item_node
 
 
-class WellNode(node.Node):
+class WellNode(item_node.ItemNode):
     def __init__(self, parent, name, attrs):
-        node.Node.__init__(self, parent, name, attrs)
+        item_node.ItemNode.__init__(self, parent, name, attrs)
         self.image_ids = []
 
     def onEndElement(self, child, name):
         if name == "Image":
             self.image_ids.append(child.id)
-        return node.Node.onEndElement(self, child, name)
+        return item_node.ItemNode.onEndElement(self, child, name)

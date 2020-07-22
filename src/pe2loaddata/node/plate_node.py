@@ -1,13 +1,13 @@
-from . import node
+from . import item_node
 
 
-class PlateNode(node.Node):
+class PlateNode(item_node.ItemNode):
     def __init__(self, parent, name, attrs):
-        node.Node.__init__(self, parent, name, attrs)
+        item_node.ItemNode.__init__(self, parent, name, attrs)
         self.well_ids = []
 
     def onEndElement(self, child, name):
         if name == "Well":
             self.well_ids.append(child.id)
         else:
-            node.Node.onEndElement(self, child, name)
+            item_node.ItemNode.onEndElement(self, child, name)
