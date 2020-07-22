@@ -1,0 +1,334 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<EvaluationInputData xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" Version="1" xmlns="http://www.perkinelmer.com/PEHH/HarmonyV5">
+  <User>mderan</User>
+  <InstrumentType>Phenix</InstrumentType>
+  <Plates>
+    <Plate>
+      <PlateID>BR00100044</PlateID>
+      <MeasurementID>d520184e-2bff-4c15-8610-0b26aa2847a7</MeasurementID>
+      <MeasurementStartTime>2018-11-18T17:27:13.5662272-05:00</MeasurementStartTime>
+      <Name>BR00100044</Name>
+      <PlateTypeName>384 PerkinElmer CellCarrier Ultra</PlateTypeName>
+      <PlateRows>16</PlateRows>
+      <PlateColumns>24</PlateColumns>
+      <Well id="0101" />
+      <Well id="0102" />
+    </Plate>
+  </Plates>
+  <Wells>
+    <Well>
+      <id>0101</id>
+      <Row>1</Row>
+      <Col>1</Col>
+      <Image id="0101K1F1P1R1" />
+      <Image id="0101K1F1P1R2" />
+    </Well>
+    <Well>
+      <id>0102</id>
+      <Row>1</Row>
+      <Col>2</Col>
+      <Image id="0102K1F1P1R1" />
+      <Image id="0102K1F1P1R2" />
+    </Well>
+  </Wells>
+  <Maps>
+    <Map>
+      <Entry ChannelID="1">
+        <FlatfieldProfile>{Background: {Character: Null, Mean: NaN, Profile: {Type: Identity}, Quality: 0.25}, Channel: 1, ChannelName: Alexa 647, Foreground: {Character: NonFlat, NonFlatness: {Original: 0.61298567, Random: 0.027575858}, Profile: {Coefficients: [[1.2783], [-0.0083, 0.0456], [-2.0559, 0.163, -1.9127], [0.1297, 0.1279, -0.1418, -0.3429], [1.5268, -0.1049, 3.0383, -0.6621, 0.9749]], Dims: [2160, 2160], Origin: [1079.5, 1079.5], Scale: [0.00046296296, 0.00046296296], Type: Polynomial}, Quality: 1.0}, Version: Acapella:2013}</FlatfieldProfile>
+      </Entry>
+      <Entry ChannelID="2">
+        <FlatfieldProfile>{Background: {Character: NonFlat, Mean: 1306.1748, NoiseConst: 4.5635913, NonFlatness: {Corrected: 0.085708044, Original: 0.61312407, Random: 0.028073098}, Profile: {Coefficients: [[1.2148], [-0.0451, -0.0189], [-1.0785, 0.1063, -1.1664], [-0.0326, 0.2235, -0.0514, -0.2372], [-1.5439, -0.4667, 1.2925, 0.0758, -1.3903]], Dims: [2160, 2160], Origin: [1079.5, 1079.5], Scale: [0.00046296296, 0.00046296296], Type: Polynomial}, Quality: 1.0}, Channel: 2, ChannelName: Alexa 568, Foreground: {Character: NonFlat, NonFlatness: {Original: 0.63454825, Random: 0.039145477}, Profile: {Coefficients: [[1.2436], [-0.1696, -0.0465], [-1.7534, -0.0968, -1.4817], [0.201, 0.4024, 0.1303, -0.2266], [1.2573, 0.4617, 1.6039, 0.1307, -0.0697]], Dims: [2160, 2160], Origin: [1079.5, 1079.5], Scale: [0.00046296296, 0.00046296296], Type: Polynomial}, Quality: 1.0}, Version: Acapella:2013}</FlatfieldProfile>
+      </Entry>
+      <Entry ChannelID="3">
+        <FlatfieldProfile>{Background: {Character: NonFlat, Mean: 748.861, NoiseConst: 3.263886, NonFlatness: {Corrected: 0.041324377, Original: 0.61627364, Random: 0.0243186}, Profile: {Coefficients: [[1.2328], [0.0411, 0.0127], [-1.3983, 0.0395, -1.2765], [-0.1111, 0.0067, -0.0842, -0.2436], [-0.7419, -0.479, 1.642, 0.3974, -0.9614]], Dims: [2160, 2160], Origin: [1079.5, 1079.5], Scale: [0.00046296296, 0.00046296296], Type: Polynomial}, Quality: 1.0}, Channel: 3, ChannelName: 488 long, Foreground: {Character: NonFlat, NonFlatness: {Original: 0.71316487, Random: 0.037129095}, Profile: {Coefficients: [[1.3058], [-0.0692, 0.0299], [-2.1873, 0.0027, -2.0069], [0.2553, 0.0609, -0.0127, -0.1827], [1.2079, -0.0041, 2.7823, 0.1342, 0.7436]], Dims: [2160, 2160], Origin: [1079.5, 1079.5], Scale: [0.00046296296, 0.00046296296], Type: Polynomial}, Quality: 1.0}, Version: Acapella:2013}</FlatfieldProfile>
+      </Entry>
+      <Entry ChannelID="4">
+        <FlatfieldProfile>{Background: {Character: NonFlat, Mean: 579.48284, NoiseConst: 3.3087558, NonFlatness: {Corrected: 0.035931975, Original: 0.568196, Random: 0.027920695}, Profile: {Coefficients: [[1.2131], [0.0093, 0.0542], [-1.3679, 0.0753, -1.028], [-0.105, -0.0527, -0.0918, -0.3235], [-0.4457, -0.4922, 1.8773, 0.2264, -1.6759]], Dims: [2160, 2160], Origin: [1079.5, 1079.5], Scale: [0.00046296296, 0.00046296296], Type: Polynomial}, Quality: 1.0}, Channel: 4, ChannelName: Alexa 488, Foreground: {Character: NonFlat, NonFlatness: {Original: 0.68498904, Random: 0.038557223}, Profile: {Coefficients: [[1.2934], [-0.0785, 0.0365], [-2.1979, 0.0752, -1.8105], [0.2435, 0.0006, 0.0401, -0.159], [1.6415, -0.2221, 2.6374, -0.0161, 0.1451]], Dims: [2160, 2160], Origin: [1079.5, 1079.5], Scale: [0.00046296296, 0.00046296296], Type: Polynomial}, Quality: 1.0}, Version: Acapella:2013}</FlatfieldProfile>
+      </Entry>
+      <Entry ChannelID="5">
+        <FlatfieldProfile>{Background: {Character: NonFlat, Mean: 575.13684, NoiseConst: 2.0265097, NonFlatness: {Corrected: 0.04703097, Original: 0.71811593, Random: 0.029776681}, Profile: {Coefficients: [[1.2476], [-0.0295, 0.0429], [-1.3915, -0.0893, -1.0778], [-0.1148, 0.0237, -0.1842, -0.3116], [-1.6371, 0.0587, 1.8956, 0.466, -2.7653]], Dims: [2160, 2160], Origin: [1079.5, 1079.5], Scale: [0.00046296296, 0.00046296296], Type: Polynomial}, Quality: 1.0}, Channel: 5, ChannelName: HOECHST 33342, Foreground: {Character: NonFlat, NonFlatness: {Original: 0.8038187, Random: 0.038646719}, Profile: {Coefficients: [[1.2866], [-0.0856, 0.0806], [-1.8585, -0.1824, -1.5917], [0.0085, -0.0439, -0.1937, -0.499], [0.5683, 0.5691, 1.034, 0.5538, -1.0658]], Dims: [2160, 2160], Origin: [1079.5, 1079.5], Scale: [0.00046296296, 0.00046296296], Type: Polynomial}, Quality: 1.0}, Version: Acapella:2013}</FlatfieldProfile>
+      </Entry>
+      <Entry ChannelID="6">
+        <FlatfieldProfile>{Background: {Character: Null, Profile: {Type: Identity}, Quality: 1}, Channel: 6, ChannelName: Brightfield CP, Foreground: {Character: Flat, Profile: {Type: Identity}, Quality: 1}, Version: Acapella:2013}</FlatfieldProfile>
+      </Entry>
+    </Map>
+    <Map>
+      <Entry ChannelID="1">
+        <SkewcropParameters>H4sIAAAAAAAEC+1WXZOiOhB9t2r+A8Wrtas4iFKl7g0uCzOOMziLjt63AAHCQIIh
+oM6vvxFnXPfLumXt1q1btW+EPp3O6dOdzuDDNkulCrECUzKUlfdtWULEpwEm0VCe
+u5/e9eUPo8bArBDhSwEFPsxRmsLFm4vakUcDtDcHkMPRIJPEPse1LPlD2aeEQ0wQ
+E0i4N/+FC8oCxFAgS3woY3mkDFpQhKmtr1u/mTonJneXo/p/IY+mMD+xODTdEZph
+mBY1IBOx6qNkKPNS6j/XJ6mQzymrAblw4PV2z0N5z6GOLeiLA/3Y+Tsa8AwYZzBC
+YtdqnxVJhFC0Gh3Q0ksFBwZJHVcKcFbgF9Qeyqr8tlDqhSswRYjYO/MoyEuKPcmD
+BdJUedRAwOqtFUunyDaMG2RzEpS6wx8CN9ncJBOE9HSB1JXDq+ug2+9x0lKq5uNn
+/qBRu80SdNXARtx1eBKaTrVWPZPFLf9lY4K4r03wvRpy6/FWdaqmUq6ms7hPexr4
+u6pg2bbmUz+P2+Cq4YMZe9wMh1eNQavm+prIEB4zHQp537cPWrUyofIXqZ8xOZSA
+0NM9+b/PTp0uURqn+heclT6vLcJjL+FB8xPXA2ScwuJQCAI3jpG3K2JUncA4LLdn
+5HstlBP9Oj+QTzkqJuQTgH+hmNnLnSTVr53lbqNC1vmMvU3u+zMA5ga4ycClmRR8
+dv8FH8vzbaep300mdKO5qJvyZYgfHjYAPKoz272Ezzc1IpL8f2pJ251vmndhqNMo
+cnrtolOUvrX+GOlPLEiapHPthnRlu2OkVbcv13YfM4c5M19bf2wWSy5acnuzIzzv
+hWGWT+fLbENUa/Ip4txd77aoGrcoTNRk6d1ix1yFd11Lb6taugrjSWlj/55eNYA5
+vZvM1D8t+aclf31LftOc++l1pj9/do0WOCIokDARd/lhEl5ylTLVMqIJMDAATyvg
+mBdW/JjR3KDnpsF3kz+n4ujn3go/I/71+L+AtOVq6z4rjYXegXbiVguNwIVtzwzT
+iWLzsilcszl3zf42Nrbbjch23VKUzpO9uPeWBX0ObRuAHpqFzmVsvn4jGLQk+8es
+EPgw/b8U8OHr+FQdDVpvr9xR4x8SFL4dGAsAAA==
+</SkewcropParameters>
+      </Entry>
+      <Entry ChannelID="2">
+        <SkewcropParameters>H4sIAAAAAAAEC+1W246iShR9N+l/ILyaGRSR1kSdUzQI0xfFbkSdtwIKLIUq5Cb6
+9VNit+2cnjEnJpPJSeaFULVXXdZe+1K9L2UUcgVKUkxJn29+bvAcIi71MAn6/NQa
+furwXwa1nlYgks0ZFLgwRmEI7bclksgPeuhg9mAGB72IY/ucxjzn9nmXkgxighKG
+hAfzPziliYcS5PFc1ucxP2j2BMiOqayvW7+ZxDOTtYtRNZ/ygycYn1lMGu4IjTAM
+0woQsbOqq0QockLqrqubFMjNaFIBYrYgq7Zb9/kDh+psRp9d6OeLP9CAF8A4ggFi
+uxYHr3DsiKZcoT2aOyHjkEBSnct5OErxHjX6vMS/DZrVwGKY1EfJJ+0kyD7EDufA
+FMkSP6ghoFniUHdRcRsrwL0vJahq0piMV8vt7eN+MTQdnUSG4sLZWG37raSdLDah
+vbfrYyDnz+Cm1n5O613B3cu6uEFmTLctSdf15bcnJ6eLZN2ddMh0s7N9glVt4d+7
+2XN2J5pFtrDLhh4AclOzXzz27QkVz1cn+vDkZZ9J+7lx1EmImMLvMq8xOcrPtLTO
+5g+eqVzFwuJc+zRLcjerLGzFQb6j3mdLj5C7EKbHIGC4uyVydukSFWewDOblBele
+g+RMO/En0jVPajHpGOC/qHUbm6uw2zLnu60EE/EFO9vYdScATBXwNQL9/nWeZHx2
+f4KP7riGWe8+PjzQrWyhdpjNfTwebwF4liaGdQ2ff8UIc/L/KR31x+E4o2oSdLZT
+rT1Cq67sZxs19NByLTacVd4p6sMOXfiGLM/Fet1fpLOZZhlTyY9heVP7qu9VVUgf
+y1DwW9a+RGpHHSo75yEcdTI0j4TAymPz5dso8JfSSmmPNq0puPfdXbnCT8aaJXQ2
+lmLvGsdX1e9vSv5NyQ/F+j0l3/+qaDl0rgv5+asymuKAII/DhNXyYxe8ppQmkq4E
+D0DBAMwWwNSuLJ13CY0VeqkbfOj6MWVXv/RO+BXxH1v/FaR1S950klyxuyI0VlZh
+ywTahjFRNDNYatf1jorNpTL729gYVjsg5UZoNsWZYY+ceUrXvmEAcIsmvnkdmx/f
+CArNyeEhywQ+dv/3AD7+nZ6pg57w9sId1L4DXDlLLxQLAAA=
+</SkewcropParameters>
+      </Entry>
+      <Entry ChannelID="3">
+        <SkewcropParameters>H4sIAAAAAAAEC+1WXY+aQBR9N9n/QHg1LQviV6K2IKy06ooti+jbAAMOwoAz+IG/
+viPuurbbmsakaZr0jeGeO3fOPffOnc6HfRJzW0goSnGXF9/f8xzEXuojHHb5J+vh
+XYv/0Kt09C3EucOgigcyGMfAfnGRJb7XgUezD3LQ6yQc2+e85jmvy3spzgHCkDAk
+OJo/IpoSHxLo81ze5RHfEzsCYGFK6/PWLybpwmQVGSz/U743BtmFxUzjAqcJAjEt
+AQmLVR4lgYkbp96qPMkWenlKSkDGHPJyu1WXP3IoYzP67EA/d35DA1wBowSEkO26
+PWaFYyHERon2040bMw4E4DIu56OEogO87/Iy/7IQy4XFMDSA5J1+FuQQI5dzAYUN
+me9VoGJYQi2ms3aD9KdNMM48qRUuTH+m7dxROxA2iWh6Y434WFjENVAriuyTVYtS
+OleXXyC6q6Cl6DSrIpaG+mqyhnEQtTRNPUybEmrQ9hrOPdMNSMO39hoaG4m18O1i
+1jTzub2/H4Ra666iFEC+q3SEkudzEgNwznLApH1/f9JJSJjCrzKvED7Jz7S0Lv4f
+M1OmipXFpfY0JxsvLy3M4yjfSe8L1xOkHwN6KgKG6y+hW9Al3F7AcrDZX5HuuUgu
+tJN+Ip14VotJxwC/oZbezMwobtdMp9jJgEhfkbvLPG+qKE+q8ilRut3bMsn4FH+D
+z8D1DLPaHg2H6a5hwXqcOwGaTHaK8kWeGtYtfH6oEZbkf6kdH1ypSp4wzushnWiR
+8HmkkOp6YkebaFtripNgGoQg0aqjvVMPXFNO6xjTEA6JFutPrJkSFx+CPNoK9br8
+eeysWo48GOqR/Sg9LoixOAiyHuSLeX/UDJT9zCg8z9P6iVRzWvPpsrXSWDtO6MOQ
+VdJthfS/Jf+35JvL+rUlX7/KWXmcXFf681fXKEUhhj6HMLvLT1PwlquUyAM1HCoq
+UpTZXDH1Gyu+T9JMTa9NgzdTP0vZ0a+9E35F/PvRfwPpgdVYt8hGtdsSMCJrazcw
+sA1jqupmuNRva/mSzbVr9o+xMax6iPdrQRSlmWE/ug5NV4FhKEoTTgPzNjbfvxHU
+dIOPD1km8Gn6vxbw6ev8TO11hJcXbq/yDaGWNiUUCwAA
+</SkewcropParameters>
+      </Entry>
+      <Entry ChannelID="4">
+        <SkewcropParameters>H4sIAAAAAAAEC+1WUY+aQBB+N/E/EF5NiyIgJGq7cJ54egonKndvCyy6J7AICHq/
+viveebbXmsakaZr0jWW+2dlvvpmdbX/ZhQGToyTFJOqwjc91lkGRSzwcLTvszLr9
+JLNfupV2L0dRZlMocGGMggDO31wEnu220cHswQx22yFD9zmtWcbtsC6JMogjlFAk
+PJi/4pQkHkqQxzJZh8Vst9HmIA1TWl+3fjPxZyZrH6Pyf8p272F8ZjFIsI9IiGGQ
+loCQxiqPEqLQCYi7Lk+SIzcjSQmIqUNWbrfusAcOZWxKnx7o584faMALYBzCJaK7
+5oesMDREQyrRHtk6AeWQwKiMy3g4TPELqndYgX1bNMqFRTGpj5JPvZMgLwF2GAem
+SBLYbgWB29FoMuA4o6mqwFc2yN1Ks/nYW+BCq2V4oSf9iPRVh/Mlyfb5WIwWkvzi
+xHYChBnYVCsr4Sbk/Pr9k3gXZmvFT59kVc32SktR5k3eMNYaMGvTvBjNBu5ww5k1
+La6LjjzuTwZFy1Sn1Yo+feSqlTZX8nxNog9PWfaptJ/rR524kCr8LvMaR0f5qZbW
+2f9DZspU0bI41z7Nkq2blRbqcZDvqPeZ6xGiBTA9FgHFaSvk7NMVys9gGdzuLkj3
+WiRn2vE/ka5xUotKRwG/oVavFRvPgdI07H0hwISfYqeIXdcEYKaCQQg6nesySfns
+/wafvuPqRk0ZDYekkCwkBpnt48mkAOBBMHXrGj4/1AhN8r/Ujrrj8+K+Ntq3erti
+qzuT4a0WzzxPHd0ntbDeGu+M+iSQ8nxUZEaG+WnuzZFu2TbRrAe3WglzJ8vy5miW
+1kVedJWmKwP1wUhwbsoDmUs9blU8+nB6B/2l8Hwj4smCe9LEoZ0+mit5fVOtgNvx
+cAjBlYX0vyX/t+SHy/q9Jd+/yll5mFwX+vNX12iKlxHyGBzRu/w4Ba+5ShOhry6H
+QMUALB6B0buy4rWExCq5NA0+TP2Y0KNfeif8ivj3o/8K0n1L2sjJVp0rPNSfrXwu
+RXCu66baM5ar3nWzo2Rz6Zr9Y2x0S1xGuw3XaPALfT527JSsfV0HoIVM37iOzfdv
+BJVso8NDlgp8nP7vBXz8Oj1Tu22u9/rC7Va+AXZ8K5UUCwAA
+</SkewcropParameters>
+      </Entry>
+      <Entry ChannelID="5">
+        <SkewcropParameters>H4sIAAAAAAAEC+1WXW+iQBR9N+l/ILyaLoJWSqLuDpaKrS3YUot9G2DAsQNDB1D0
+1++IrbXbXbMx2Ww22TeGe+bj3HO/Ol/LmAgLxDJMk64of2mIAkp8GuAk6ooPzuXp
+ufi1V+sYC5TkLocCH6aIEDh529JSxF4HbcwBzGGvEwv8nN1aFPyu6NMkhzhBjCPh
+xvwNZ5QFiKFAFPKuiMWe3JEgv6ayvh79ZlL2TM4qRdX/TOzdwHTPYlOySmiMIckq
+QMzvqp4So9gj1H+uXrJAfk5ZBUj5hrw67rkrbjhUd3P6/EE/3/yJBjwAxjGMED91
+sfGKwK+Q2xU6oIVHOAcGk+peIcBxhteo0RVb4ttCrhYOx2QhYqfGTpA1wZ7gwQy1
+W2KvhsBAbcZDVas3WX/ccoOsrWlrEr9kVl9pyPel59mqThRpyPzLZrAOtXDR0CXo
+3VHz8lK1T2ojVma+okjLs9AN+SnzPFovjQtZnYbuy8yDNwrOlKDh1geG5OizgdV2
+yCTAKB5OxhdnFjipNSLg3/dXs5NaR6q4vjoyhDtPh1zeL42tVlLMVX6X+hkn2xDg
+ejp7/zfeqdzFQ2Nf/yxnhZ9XFr5jI+FW872tW0ifwGwbCBzXnyFvlc3QYg+Ww6I8
+IN9roOzpp/xEPnmnGJePA35DMUNN7TnRmra7WrYgU+6xt0x9fwzAgw6GMeh2j/Mk
+57P6G3wGnm/adW10fU2XbQedkdwNsWUtAbhrjU3nGD4/xAh38j+Vkk7hSKSem2uj
+LM+JvL712N1DUI+u+tZARQUbh3R6pTwQKdLCpxuNabeMOpbmzuy47p7UoO+ORtKT
+VWeG9zhPkfqIQMRGt7G3Tky5OW3WL64ahesWAUBXUXs+aU7TkjRJGOnuRWmZPCXH
+oIX6UXhcIP1Pyf8p+alYv6fk+1fVLzfd60B+/qqMZjhKUCDghNfybSc8ppSy1kCP
+roGOAXicAts4snT2GU11eqgbfOr8KeVPPzQr/Ir4x/Z/BOmB0345Z4U+0RRozp3F
+pJ3AiWmOdcOOZsZxKV+xOVRm/xgb0zmLkvJFkmXl0Zzcem5Gn0PTBEBF45DPJ8fM
+FB9nBJ0WyWaY5QJvu/97AG+/dqNqryO9Tbm92ne5F7OJGAsAAA==
+</SkewcropParameters>
+      </Entry>
+      <Entry ChannelID="6">
+        <SkewcropParameters>H4sIAAAAAAAEC+1W246iShR9N/EfCK9mBkEQTNSZwhvT7QVamsF+K6DAUigQEC9f
+PyV2287pGXNicnIyybxR7FWXtde+tb/so5ApUJrhmHRY/nOdZRBxYw+ToMM+m8NP
+CvulW2kPCkRym0KBCxMUhtB62yIKbLeNTmYP5rDbjhh6zmXNMm6HdWOSQ0xQSpHw
+ZP6Kszj1UIo8lsk7LGa7fJuD9JrS+nr0m0m4MpmHBJX/M7Y7gcmVRY/DA4kjDMOs
+BET0rvIpEYqcMHbX5UsK5OZxWgISuiEvj1t32BOH8m5Knz7o15s/0IA3wDiCAaKn
+FievMPQKvlmivXjrhJRDCkl5L+PhKMNHVO+wIvu24MuFSTGZj9JPg4sgxxA7jAMz
+1BTZbgWBofM4HzWNohGpwF/5/dFyNK0l/QDN87VNHFnaHI99NbeI0uBIK+fWtcmk
+xSUkAcqzKFcrC75fC7j6BNdehs3l2hMUBaiG5El7buGsxIE1bSk1p9iOnUC0dRlp
++mIeNesLcaVKYPj0VK08JItOtdLmSp6vTvThxcs+lfZz/awTF1GF32VeY3KWn2pp
+Xv0/eaZ0FQ2La+2zPN26eWmhO07ynfW+2nqG9EKYnYOA4npL5ByyJSquYDnc7m9I
+9xokV9oJv5COv6hFpaOAf6HWQE70Vdhq6PZhJ8JUmGNnl7iuAcCzCr5FoHOnJymf
+w//BZ+S4ml5rjR8f413TRFKY2z6ezXYAPImGZt7D5x8xQp38J6XjSC60aSSgujbY
+75UwfZFtbjj3vGBlLfWNLSeJXp/1F5Ly8tSyalLkmBs81jeGXHhNl6tWhmPS4IdS
+kkVHKOe9cW0fBbuZjx44f8qpvjBr4E3qxS159+BqPYebIvsQrBzL2K/wRFuDaqW3
+pFXKuDeQ/qbk35T8UKzfU/L9q+yVp851Iz9/V0YzHBDkMZjQWn7ugveU0lQcqcEj
+UDEA3xdAH9xZOntpnKjxrW7woesnMX36rTnhd8R/bv13kB6ZzY2SblWrJUBtZRZW
+k0BL0wx1oAfLwX1duGRzq8z+Z2w0UwrIfsPxvPBds6aOncVrX9MAkJHh6/ex+XlG
+UOMtOQ2yVOBz938P4PPXZUzttrm3Cbdb+QEqShm7FAsAAA==
+</SkewcropParameters>
+      </Entry>
+    </Map>
+  </Maps>
+  <Images>
+      <Image Version="1">
+      <id>0101K1F1P1R1</id>
+      <State>Ok</State>
+      <URL>r01c01f01p01-ch1sk1fk1fl1.tiff</URL>
+      <Row>1</Row>
+      <Col>1</Col>
+      <FieldID>1</FieldID>
+      <PlaneID>1</PlaneID>
+      <TimepointID>0</TimepointID>
+      <ChannelID>1</ChannelID>
+      <FlimID>1</FlimID>
+      <ChannelName>Alexa 647</ChannelName>
+      <ImageType>Signal</ImageType>
+      <AcquisitionType>NonConfocal</AcquisitionType>
+      <IlluminationType>Epifluorescence</IlluminationType>
+      <ChannelType>Fluorescence</ChannelType>
+      <ImageResolutionX Unit="m">2.9898804047838085E-07</ImageResolutionX>
+      <ImageResolutionY Unit="m">2.9898804047838085E-07</ImageResolutionY>
+      <ImageSizeX>2160</ImageSizeX>
+      <ImageSizeY>2160</ImageSizeY>
+      <BinningX>1</BinningX>
+      <BinningY>1</BinningY>
+      <MaxIntensity>65535</MaxIntensity>
+      <CameraType>AndorZylaCam</CameraType>
+      <PositionX Unit="m">0</PositionX>
+      <PositionY Unit="m">0</PositionY>
+      <PositionZ Unit="m">-6E-06</PositionZ>
+      <AbsPositionZ Unit="m">0.134589806</AbsPositionZ>
+      <MeasurementTimeOffset Unit="s">0</MeasurementTimeOffset>
+      <AbsTime>2018-11-18T17:32:00.607-05:00</AbsTime>
+      <MainExcitationWavelength Unit="nm">640</MainExcitationWavelength>
+      <MainEmissionWavelength Unit="nm">706</MainEmissionWavelength>
+      <ObjectiveMagnification Unit="">20</ObjectiveMagnification>
+      <ObjectiveNA Unit="">1</ObjectiveNA>
+      <ExposureTime Unit="s">0.02</ExposureTime>
+      <OrientationMatrix>[[0.982550,0,0,32.7],[0,-0.982550,0,32.3],[0,0,1.00,0]]</OrientationMatrix>
+    </Image>
+    <Image Version="1">
+      <id>0101K1F1P1R2</id>
+      <State>Ok</State>
+      <URL>r01c01f01p01-ch2sk1fk1fl1.tiff</URL>
+      <Row>1</Row>
+      <Col>1</Col>
+      <FieldID>1</FieldID>
+      <PlaneID>1</PlaneID>
+      <TimepointID>0</TimepointID>
+      <ChannelID>2</ChannelID>
+      <FlimID>1</FlimID>
+      <ChannelName>Alexa 568</ChannelName>
+      <ImageType>Signal</ImageType>
+      <AcquisitionType>NonConfocal</AcquisitionType>
+      <IlluminationType>Epifluorescence</IlluminationType>
+      <ChannelType>Fluorescence</ChannelType>
+      <ImageResolutionX Unit="m">2.9898804047838085E-07</ImageResolutionX>
+      <ImageResolutionY Unit="m">2.9898804047838085E-07</ImageResolutionY>
+      <ImageSizeX>2160</ImageSizeX>
+      <ImageSizeY>2160</ImageSizeY>
+      <BinningX>1</BinningX>
+      <BinningY>1</BinningY>
+      <MaxIntensity>65535</MaxIntensity>
+      <CameraType>AndorZylaCam</CameraType>
+      <PositionX Unit="m">0</PositionX>
+      <PositionY Unit="m">0</PositionY>
+      <PositionZ Unit="m">-5E-06</PositionZ>
+      <AbsPositionZ Unit="m">0.134589806</AbsPositionZ>
+      <MeasurementTimeOffset Unit="s">0</MeasurementTimeOffset>
+      <AbsTime>2018-11-18T17:32:00.997-05:00</AbsTime>
+      <MainExcitationWavelength Unit="nm">561</MainExcitationWavelength>
+      <MainEmissionWavelength Unit="nm">599</MainEmissionWavelength>
+      <ObjectiveMagnification Unit="">20</ObjectiveMagnification>
+      <ObjectiveNA Unit="">1</ObjectiveNA>
+      <ExposureTime Unit="s">0.03</ExposureTime>
+      <OrientationMatrix>[[0.982550,0,0,32.7],[0,-0.982550,0,32.3],[0,0,1.00,0]]</OrientationMatrix>
+    </Image>
+    <Image Version="1">
+      <id>0102K1F1P1R1</id>
+      <State>Ok</State>
+      <URL>r01c02f01p01-ch1sk1fk1fl1.tiff</URL>
+      <Row>1</Row>
+      <Col>2</Col>
+      <FieldID>1</FieldID>
+      <PlaneID>1</PlaneID>
+      <TimepointID>0</TimepointID>
+      <ChannelID>1</ChannelID>
+      <FlimID>1</FlimID>
+      <ChannelName>Alexa 647</ChannelName>
+      <ImageType>Signal</ImageType>
+      <AcquisitionType>NonConfocal</AcquisitionType>
+      <IlluminationType>Epifluorescence</IlluminationType>
+      <ChannelType>Fluorescence</ChannelType>
+      <ImageResolutionX Unit="m">2.9898804047838085E-07</ImageResolutionX>
+      <ImageResolutionY Unit="m">2.9898804047838085E-07</ImageResolutionY>
+      <ImageSizeX>2160</ImageSizeX>
+      <ImageSizeY>2160</ImageSizeY>
+      <BinningX>1</BinningX>
+      <BinningY>1</BinningY>
+      <MaxIntensity>65535</MaxIntensity>
+      <CameraType>AndorZylaCam</CameraType>
+      <PositionX Unit="m">0</PositionX>
+      <PositionY Unit="m">0</PositionY>
+      <PositionZ Unit="m">-6E-06</PositionZ>
+      <AbsPositionZ Unit="m">0.134581804</AbsPositionZ>
+      <MeasurementTimeOffset Unit="s">0</MeasurementTimeOffset>
+      <AbsTime>2018-11-18T17:32:18.81-05:00</AbsTime>
+      <MainExcitationWavelength Unit="nm">640</MainExcitationWavelength>
+      <MainEmissionWavelength Unit="nm">706</MainEmissionWavelength>
+      <ObjectiveMagnification Unit="">20</ObjectiveMagnification>
+      <ObjectiveNA Unit="">1</ObjectiveNA>
+      <ExposureTime Unit="s">0.02</ExposureTime>
+      <OrientationMatrix>[[0.982550,0,0,32.7],[0,-0.982550,0,32.3],[0,0,1.00,0]]</OrientationMatrix>
+    </Image>
+    <Image Version="1">
+      <id>0102K1F1P1R2</id>
+      <State>Ok</State>
+      <URL>r01c02f01p01-ch2sk1fk1fl1.tiff</URL>
+      <Row>1</Row>
+      <Col>2</Col>
+      <FieldID>1</FieldID>
+      <PlaneID>1</PlaneID>
+      <TimepointID>0</TimepointID>
+      <ChannelID>2</ChannelID>
+      <FlimID>1</FlimID>
+      <ChannelName>Alexa 568</ChannelName>
+      <ImageType>Signal</ImageType>
+      <AcquisitionType>NonConfocal</AcquisitionType>
+      <IlluminationType>Epifluorescence</IlluminationType>
+      <ChannelType>Fluorescence</ChannelType>
+      <ImageResolutionX Unit="m">2.9898804047838085E-07</ImageResolutionX>
+      <ImageResolutionY Unit="m">2.9898804047838085E-07</ImageResolutionY>
+      <ImageSizeX>2160</ImageSizeX>
+      <ImageSizeY>2160</ImageSizeY>
+      <BinningX>1</BinningX>
+      <BinningY>1</BinningY>
+      <MaxIntensity>65535</MaxIntensity>
+      <CameraType>AndorZylaCam</CameraType>
+      <PositionX Unit="m">0</PositionX>
+      <PositionY Unit="m">0</PositionY>
+      <PositionZ Unit="m">-5E-06</PositionZ>
+      <AbsPositionZ Unit="m">0.134581804</AbsPositionZ>
+      <MeasurementTimeOffset Unit="s">0</MeasurementTimeOffset>
+      <AbsTime>2018-11-18T17:32:19.2-05:00</AbsTime>
+      <MainExcitationWavelength Unit="nm">561</MainExcitationWavelength>
+      <MainEmissionWavelength Unit="nm">599</MainEmissionWavelength>
+      <ObjectiveMagnification Unit="">20</ObjectiveMagnification>
+      <ObjectiveNA Unit="">1</ObjectiveNA>
+      <ExposureTime Unit="s">0.03</ExposureTime>
+      <OrientationMatrix>[[0.982550,0,0,32.7],[0,-0.982550,0,32.3],[0,0,1.00,0]]</OrientationMatrix>
+    </Image>
+  </Images>
+</EvaluationInputData>
