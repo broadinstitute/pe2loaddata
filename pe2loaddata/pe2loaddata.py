@@ -20,10 +20,11 @@ import xml.sax.handler
 import yaml
 
 
-class PEContentHandler(xml.sax.ContentHandler):
-    '''Ignore all content until endElement'''
+class PEContentHandler(xml.sax.handler.ContentHandler):
+    """Ignore all content until endElement"""
 
     def __init__(self, parent, name, attrs):
+        super().__init__()
         self.parent = parent
         self.name = name
         self.content = ""
@@ -51,22 +52,22 @@ class PEContentHandler(xml.sax.ContentHandler):
 
     @property
     def well_name(self):
-        '''The well name
+        """The well name
 
         Taken from row and column metadata values, valid for Well and Image
         elements
-        '''
+        """
         row = int(self.metadata["Row"])
         col = int(self.metadata["Col"])
         return chr(ord('A') + row - 1) + ("%02d" % col)
 
     @property
     def channel_name(self):
-        '''The channel name
+        """The channel name
 
         Strip out spaces in the channel name because XML parser seems to
         be broken
-        '''
+        """
         channel = self.metadata["ChannelName"]
         return channel.replace(" ", "")
 
@@ -190,7 +191,7 @@ class DocContentHandler(xml.sax.ContentHandler):
 
 
 def check_file_arg(arg):
-    '''Make sure the argument is a path to a file'''
+    """Make sure the argument is a path to a file"""
     if not os.path.isfile(arg):
         raise argparse.ArgumentTypeError(
             "%s is not a path to an existing file" % arg)
@@ -198,7 +199,7 @@ def check_file_arg(arg):
 
 
 def check_dir_arg(arg):
-    '''Make sure the argument is a path to an existing directory'''
+    """Make sure the argument is a path to an existing directory"""
     if not os.path.isdir(arg):
         raise argparse.ArgumentTypeError(
             "%s is not a path to an existing directory" % arg)
@@ -231,7 +232,7 @@ def parse_args():
 
 
 def load_config(config_file):
-    '''Load the configuration from config.yaml'''
+    """Load the configuration from config.yaml"""
     with open(config_file, "r") as fd:
         config = yaml.load(fd)
     if isinstance(config, list):
