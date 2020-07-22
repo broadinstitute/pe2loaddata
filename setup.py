@@ -4,10 +4,11 @@ import setuptools
 setuptools.setup(
     entry_points={
         'console_scripts': [
-            "pe2loaddata=pe2loaddata.__main__:main",
+            "pe2loaddata=src.pe2loaddata.__main__:main",
         ],
     },
     install_requires=[
+        "click>=7.1.2",
         "PyYAML>=5.3.1"
     ],
     name="pe2loaddata",
