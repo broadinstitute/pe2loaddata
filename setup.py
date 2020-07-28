@@ -7,6 +7,11 @@ setuptools.setup(
             "pe2loaddata=src.pe2loaddata.__main__:main",
         ],
     },
+    extras_require={
+        "test":  [
+            "pytest>=5.4.3"
+        ]
+    },
     install_requires=[
         "click>=7.1.2",
         "PyYAML>=5.3.1"
