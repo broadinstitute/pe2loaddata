@@ -94,33 +94,33 @@ def test_load_config():
     assert metadata == expected_metadata
 
 
-def test_write_csv():
-    config_file = "./tests/data/config.yml"
-
-    assert os.path.exists(config_file)
-
-    channels, metadata = load_config(config_file)
-
-    channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
-
-    index_file = "./tests/data/Index.idx.xml"
-
-    handler = Handler()
-
-    xml.sax.parse(index_file, handler)
-
-    images = handler.root.images.images
-    plates = handler.root.plates.plates
-    wells = handler.root.wells.wells
-
-    paths = {}
-
-    index_directory = "./tests/data/images"
-
-    for filename in os.listdir(index_directory):
-        paths[filename] = index_directory
-
-    with open("example.csv", "w") as fd:
-        writer = csv.writer(fd, lineterminator='\n')
-
-        write_csv(writer, images, plates, wells, channels, metadata, paths)
+# def test_write_csv():
+#     config_file = "./tests/data/config.yml"
+#
+#     assert os.path.exists(config_file)
+#
+#     channels, metadata = load_config(config_file)
+#
+#     channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
+#
+#     index_file = "./tests/data/Index.idx.xml"
+#
+#     handler = Handler()
+#
+#     xml.sax.parse(index_file, handler)
+#
+#     images = handler.root.images.images
+#     plates = handler.root.plates.plates
+#     wells = handler.root.wells.wells
+#
+#     paths = {}
+#
+#     index_directory = "./tests/data/images"
+#
+#     for filename in os.listdir(index_directory):
+#         paths[filename] = index_directory
+#
+#     with open("example.csv", "w") as fd:
+#         writer = csv.writer(fd, lineterminator='\n')
+#
+#         write_csv(writer, images, plates, wells, channels, metadata, paths)
