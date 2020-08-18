@@ -1,4 +1,3 @@
-import os.path
 import setuptools
 
 setuptools.setup(
@@ -17,11 +16,6 @@ setuptools.setup(
         "PyYAML>=5.3.1"
     ],
     name="pe2loaddata",
-    package_data={
-        "pe2loaddata": [
-            os.path.join("data", "*.json")
-        ]
-    },
     packages=setuptools.find_packages(),
     python_requires='>=3.8',
     version="0.1.0"
