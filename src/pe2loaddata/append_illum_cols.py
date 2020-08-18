@@ -6,11 +6,12 @@ import csv
 import os
 import shutil
 import tempfile
-
+from os import PathLike
+from typing import Union, Any
 import yaml
 
 
-def check_file_arg(arg):
+def check_file_arg(arg: Union[bytes, str, PathLike]) -> Union[bytes, str, PathLike]:
     """Make sure the argument is a path to a file"""
     if not os.path.isfile(arg):
         raise argparse.ArgumentTypeError(
@@ -18,7 +19,7 @@ def check_file_arg(arg):
     return arg
 
 
-def check_dir_arg(arg):
+def check_dir_arg(arg: Union[bytes, str, PathLike]) -> Union[bytes, str, PathLike]:
     """Make sure the argument is a path to an existing directory"""
     if not os.path.isdir(arg):
         raise argparse.ArgumentTypeError(
@@ -34,37 +35,47 @@ def parse_args():
     parser.add_argument("--plate-id",
                         dest="plate_id",
                         help="Plate ID")
+
     parser.add_argument(
         "--illum-directory", type=check_dir_arg,
         dest="illum_directory",
         help="The directory containing the illumination functions")
+
     parser.add_argument(
         "config_file", type=check_file_arg,
         help="The config.yaml file that chooses channels and"
              " metadata for the CSV")
+
     parser.add_argument(
         "--illum_filetype", default='.npy', dest='illum_filetype',
         help="The file type of the illum files- in CP2.X, this should be '.mat', in CP3.X '.npy'")
+
     parser.add_argument(
         "input_csv", type=check_file_arg,
         help="The name of the LoadData .csv file to be manipulated")
+
     parser.add_argument(
         "output_csv",
         help="The name of the LoadData .csv file to be created after appending")
+
     return parser.parse_args()
 
 
-def load_config(config_file):
+def load_config(config_file: Union[bytes, str, PathLike]) -> (Any, Any):
     """Load the configuration from config.yaml"""
     with open(config_file, "r") as fd:
-        config = yaml.load(fd)
-    if isinstance(config, list):
-        config = config[0]
+        config = yaml.load(fd, Loader=yaml.BaseLoader)
+
+    # if isinstance(config, list):
+    #     config = config[0]
+
     channels = config['channels']
+
     return channels
 
 
 def main():
+
     options = parse_args()
     channels = load_config(options.config_file)
     nrows = sum(1 for _ in open(options.input_csv)) - 1
@@ -73,12 +84,17 @@ def main():
 
     with open(os.path.join(tmpdir, 'illum.csv'), 'wb') as fd:
         writer = csv.writer(fd, lineterminator='\n')
+
         write_csv(writer, channels, options.illum_directory, options.plate_id, nrows, options.illum_filetype)
+
+
 
     os.system('paste -d "," {} {} > {}'.format(options.input_csv,
                                                os.path.join(tmpdir, 'illum.csv'),
                                                options.output_csv
                                                ))
+
+
     shutil.rmtree(tmpdir)
 
 
