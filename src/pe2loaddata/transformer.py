@@ -147,9 +147,7 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
 
                         print(e)
 
-                        row = []
-
-                        break
+                        continue
 
                 if not row:
                     continue
