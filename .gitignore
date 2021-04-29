@@ -36,3 +36,5 @@ sdist/
 target/
 var/
 venv
+.DS_Store
+*.DS_Store
