@@ -4,6 +4,7 @@ channels:
     Alexa 647: OrigMito
     Alexa 488: OrigER
     488 long: OrigRNA
+    Brightfield: OrigBrightfield
 metadata:
     Row: Row
     Col: Col

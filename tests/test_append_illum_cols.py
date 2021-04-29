@@ -1,5 +1,5 @@
 import csv
-import os.path
+import os
 import xml.sax
 from os import PathLike
 from pathlib import Path
@@ -58,7 +58,7 @@ def test_load_config():
             "Alexa 568": "OrigAGP",
             "Alexa 647": "OrigMito",
             "HOECHST 33342": "OrigDNA",
-            "Brightfield CP": "OrigBrightfield"
+            "Brightfield": "OrigBrightfield"
     }
 
     assert channels == expected_channels
@@ -69,41 +69,42 @@ def test_parse_args():
     pass
 
 
-# def test_main():
-#     config_file = "./tests/data/config.yml"
-#     input_csv = "load_data.csv"
-#     illum_filetype = ".mat"
-#     nrows = sum(1 for _ in open(input_csv)) - 1
-#
-#
-#
-#     expected_channels = {
-#         "488 long": "OrigRNA",
-#         "Alexa 488": "OrigER",
-#         "Alexa 568": "OrigAGP",
-#         "Alexa 647": "OrigMito",
-#         "HOECHST 33342": "OrigDNA",
-#         "Brightfield CP": "OrigBrightfield"
-#     }
-#
-#     assert os.path.exists(config_file)
-#     channels = load_config(config_file)
-#     illum_directory = "tests/data/illum/"
-#     plate_id = ["BR00100044"]
-#
-#     assert nrows !=  {}
-#     assert channels == expected_channels
-#
-#
-#
-#     with open('illum.csv', 'w') as fd:
-#         writer = csv.writer(fd, lineterminator='\n')
-#
-#     write_csv(writer, channels, illum_directory, plate_id, nrows, illum_filetype)
+def test_main():
+    config_file = "./tests/data/config.yml"
+    input_csv = "./tests/data/load_data.csv"
+    illum_filetype = ".mat"
+    nrows = sum(1 for _ in open(input_csv)) - 1
+
+
+
+    expected_channels = {
+        "488 long": "OrigRNA",
+        "Alexa 488": "OrigER",
+        "Alexa 568": "OrigAGP",
+        "Alexa 647": "OrigMito",
+        "HOECHST 33342": "OrigDNA",
+        "Brightfield": "OrigBrightfield"
+    }
+
+    assert os.path.exists(config_file)
+    channels = load_config(config_file)
+    illum_directory = "tests/data/illum/"
+    plate_id = "BR00100044"
+
+    assert nrows !=  {}
+    assert channels == expected_channels
+
+
+
+    with open('illum.csv', 'w') as fd:
+        writer = csv.writer(fd, lineterminator='\n')
+        write_csv(writer, channels, illum_directory, plate_id, nrows, illum_filetype)
+    
+    os.remove('illum.csv')
 
 def test_write_csv():
     config_file = "./tests/data/config.yml"
-    input_csv = "load_data.csv"
+    input_csv = "tests/data/load_data.csv"
     illum_filetype = ".mat"
 
     nrows = sum(1 for _ in open(input_csv)) - 1
@@ -115,7 +116,9 @@ def test_write_csv():
     with open('illum.csv', 'w') as fd:
         writer = csv.writer(fd, lineterminator='\n')
 
-    write_csv(writer, channels, illum_directory, plate_id, nrows, illum_filetype)
+        write_csv(writer, channels, illum_directory, plate_id, nrows, illum_filetype)
+
+    os.remove('illum.csv')
 
 
 
