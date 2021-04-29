@@ -143,11 +143,13 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
 
                         row += [file_name, paths[file_name]]
                     except Exception as e:
-                        logging.debug("Channel = {}; Field = {}; Well = {}; Well_id = {}; Plate = {}".format(channel, field, plate_name))
+                        logging.debug("Channel = {}; Field = {}; Plate = {}".format(channel, field, plate_name))
 
                         print(e)
 
-                        continue
+                        row = []
+
+                        break
 
                 if not row:
                     continue
