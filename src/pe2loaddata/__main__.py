@@ -1,5 +1,7 @@
 import csv
 import os
+import shutil
+import tempfile
 import xml.sax
 
 import click
@@ -96,7 +98,15 @@ def main(configuration, output, index_directory, index_file, search_subdirectori
             with open(output,'r') as fd:
                 nrows = sum(1 for _ in fd) - 1
 
-            with open(illum_output, 'w') as fd:
+            tmpdir = tempfile.mkdtemp()
+
+            with open(os.path.join(tmpdir, 'illum.csv'), 'w') as fd:
                 illumwriter = csv.writer(fd, lineterminator='\n')
                 append_illum_cols.write_csv(illumwriter, channels, illum_directory, plate_id, nrows, illum_filetype)
 
+            os.system('paste -d "," {} {} > {}'.format(output,
+                                               os.path.join(tmpdir, 'illum.csv'),
+                                               illum_output
+                                               ))
+
+            shutil.rmtree(tmpdir)
