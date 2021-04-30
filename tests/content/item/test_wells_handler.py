@@ -1,0 +1,2 @@
+class TestWellsHandler:
+    pass
