@@ -59,6 +59,8 @@ populates the plate, well and site metadata entriess.
 pe2loaddata now supports experiments with multiple planes per field as long as the `PlaneID` field 
 has been set in the config file.
 
+------
+
 To run CSV creation based on the XML file, AND to append illumination columns (note that this requires 
 the CellProfiler names in your config file to start with `Orig`, which will be replaced by `Illum`)
 
