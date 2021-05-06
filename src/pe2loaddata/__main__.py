@@ -74,6 +74,9 @@ def main(configuration, output, index_directory, index_file, search_subdirectori
 
     paths = {}
 
+    if not os.path.exists(os.path.dirname(output)):
+        os.makedirs(os.path.dirname(output))
+
     if not illum_only:
         if search_subdirectories:
             for dir_root, directories, filenames in os.walk(index_directory):
@@ -95,6 +98,9 @@ def main(configuration, output, index_directory, index_file, search_subdirectori
 
         else:
             
+            if not os.path.exists(os.path.dirname(illum_output)):
+                os.makedirs(os.path.dirname(illum_output))
+
             with open(output,'r') as fd:
                 nrows = sum(1 for _ in fd) - 1
 
