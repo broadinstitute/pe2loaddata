@@ -55,7 +55,9 @@ The destination file for the illum output if both pe2loaddata and append illum a
 @click.option("--plate-id", help="Plate ID", type=click.STRING)
 @click.option("--illum-filetype", help=illum_filetype_help, default='.npy', type=click.STRING)
 @click.option("--illum-output", help=illum_output_help, type=click.Path(dir_okay=False))
-def main(configuration, output, index_directory, index_file, search_subdirectories, illum_only, illum, illum_directory, plate_id, illum_filetype, illum_output):
+@click.option("--sub-path-out",help='A part of the path you want substituted by sub-path-in', type=click.STRING, default='')
+@click.option("--sub-path-in",help='A part of the path you want substituted instead of sub-path-out', type=click.STRING, default='')
+def main(configuration, output, index_directory, index_file, search_subdirectories, illum_only, illum, illum_directory, plate_id, illum_filetype, illum_output, sub_path_out, sub_path_in):
     channels, metadata = transformer.load_config(configuration)
 
     # Strip spaces because XML parser is broken
@@ -90,7 +92,7 @@ def main(configuration, output, index_directory, index_file, search_subdirectori
             with open(output, "w") as fd:
                 writer = csv.writer(fd, lineterminator='\n')
 
-                transformer.write_csv(writer, images, plates, wells, channels, metadata, paths)
+                transformer.write_csv(writer, images, plates, wells, channels, metadata, paths, sub_path_out, sub_path_in)
 
     if illum_only or illum:
         if not all([illum_directory,plate_id,illum_output]):
@@ -108,7 +110,7 @@ def main(configuration, output, index_directory, index_file, search_subdirectori
 
             with open(os.path.join(tmpdir, 'illum.csv'), 'w') as fd:
                 illumwriter = csv.writer(fd, lineterminator='\n')
-                append_illum_cols.write_csv(illumwriter, channels, illum_directory, plate_id, nrows, illum_filetype)
+                append_illum_cols.write_csv(illumwriter, channels, illum_directory, plate_id, nrows, illum_filetype, sub_path_out, sub_path_in)
 
             os.system('paste -d "," {} {} > {}'.format(output,
                                                os.path.join(tmpdir, 'illum.csv'),
