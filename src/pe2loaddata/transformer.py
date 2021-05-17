@@ -161,6 +161,6 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths, sub_stri
                     row.append(image.metadata[key])
 
                 if sub_string_in != '' and sub_string_out != '':
-                    row = row.replace(sub_string_out,sub_string_in)
+                    row = [x.replace(sub_string_out,sub_string_in) for x in row]
 
                 writer.writerow(row)
