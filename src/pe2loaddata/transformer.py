@@ -92,7 +92,7 @@ def load_config(config_file: Union[bytes, str, PathLike]) -> (Any, Any):
     return channels, metadata
 
 
-def write_csv(writer, images, plates, wells, channels, metadata, paths):
+def write_csv(writer, images, plates, wells, channels, metadata, paths, sub_string_out='', sub_string_in=''):
     header = sum([["_".join((prefix, channels[channel])) for prefix in ["FileName", "PathName"]] for channel in sorted(channels.keys())], [])
 
     header += ["Metadata_Plate", "Metadata_Well", "Metadata_Site"]
@@ -159,5 +159,8 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths):
 
                 for key in sorted(metadata.keys()):
                     row.append(image.metadata[key])
+
+                if sub_string_in != '' and sub_string_out != '':
+                    row = [x.replace(sub_string_out,sub_string_in) for x in row]
 
                 writer.writerow(row)
