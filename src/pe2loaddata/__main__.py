@@ -76,9 +76,11 @@ def main(configuration, output, index_directory, index_file, search_subdirectori
 
     paths = {}
 
-    if not os.path.exists(os.path.dirname(output)):
-        os.makedirs(os.path.dirname(output))
-
+    output_path = os.path.dirname(output)
+    if not output_path == "":
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)    
+    
     if not illum_only:
         if search_subdirectories:
             for dir_root, directories, filenames in os.walk(index_directory):
@@ -99,9 +101,11 @@ def main(configuration, output, index_directory, index_file, search_subdirectori
             print("You must set the --illum-directory, --plate-id, and --illum-output flags when using the illum options in pe2loaddata")
 
         else:
-            
-            if not os.path.exists(os.path.dirname(illum_output)):
-                os.makedirs(os.path.dirname(illum_output))
+        
+            illum_output_path = os.path.dirname(illum_output)
+            if not illum_output_path == "":
+                if not os.path.exists(illum_output_path):
+                    os.makedirs(illum_output_path)
 
             with open(output,'r') as fd:
                 nrows = sum(1 for _ in fd) - 1
