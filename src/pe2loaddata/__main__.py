@@ -76,7 +76,7 @@ def main(configuration, output, index_directory, index_file, search_subdirectori
 
     paths = {}
 
-    if not os.path.exists(os.path.dirname(output)):
+    if os.path.dirname(output) != '' and not os.path.exists(os.path.dirname(output)):
         os.makedirs(os.path.dirname(output))
 
     if not illum_only:
