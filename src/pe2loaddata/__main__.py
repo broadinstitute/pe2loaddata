@@ -43,21 +43,7 @@ illum_output_help = """
 The destination file for the illum output if both pe2loaddata and append illum are being run
 """
 
-@click.command()
-@click.argument("configuration", type=click.Path(exists=True, dir_okay=False))
-@click.argument("output", type=click.Path(dir_okay=False))
-@click.option("--index-directory", default=os.path.curdir, help=index_directory_help, type=click.Path(exists=True))
-@click.option("--index-file", help=index_file_help, type=click.Path(exists=True, dir_okay=False))
-@click.option("--search-subdirectories", help=search_subdirectories_help, is_flag=True)
-@click.option("--illum-only",help=illum_only_help, default=False, is_flag=True)
-@click.option("--illum/--no-illum",help=illum_help, default=False)
-@click.option("--illum-directory", default=os.path.curdir, help=illum_directory_help, type=click.Path(exists=False))
-@click.option("--plate-id", help="Plate ID", type=click.STRING)
-@click.option("--illum-filetype", help=illum_filetype_help, default='.npy', type=click.STRING)
-@click.option("--illum-output", help=illum_output_help, type=click.Path(dir_okay=False))
-@click.option("--sub-string-out",help='A part of the row (typically a path) you want substituted by sub-string-in', type=click.STRING, default='')
-@click.option("--sub-string-in",help='A part of the row (typically a path) you want substituted instead of sub-string-out', type=click.STRING, default='')
-def main(configuration, output, index_directory, index_file, search_subdirectories, illum_only, illum, illum_directory, plate_id, illum_filetype, illum_output, sub_string_out, sub_string_in):
+def headless(configuration, output, index_directory, index_file, search_subdirectories, illum_only, illum, illum_directory, plate_id, illum_filetype, illum_output, sub_string_out, sub_string_in):
     channels, metadata = transformer.load_config(configuration)
 
     # Strip spaces because XML parser is broken
@@ -118,3 +104,22 @@ def main(configuration, output, index_directory, index_file, search_subdirectori
                                                ))
 
             shutil.rmtree(tmpdir)
+
+
+@click.command()
+@click.argument("configuration", type=click.Path(exists=True, dir_okay=False))
+@click.argument("output", type=click.Path(dir_okay=False))
+@click.option("--index-directory", default=os.path.curdir, help=index_directory_help, type=click.Path(exists=True))
+@click.option("--index-file", help=index_file_help, type=click.Path(exists=True, dir_okay=False))
+@click.option("--search-subdirectories", help=search_subdirectories_help, is_flag=True)
+@click.option("--illum-only",help=illum_only_help, default=False, is_flag=True)
+@click.option("--illum/--no-illum",help=illum_help, default=False)
+@click.option("--illum-directory", default=os.path.curdir, help=illum_directory_help, type=click.Path(exists=False))
+@click.option("--plate-id", help="Plate ID", type=click.STRING)
+@click.option("--illum-filetype", help=illum_filetype_help, default='.npy', type=click.STRING)
+@click.option("--illum-output", help=illum_output_help, type=click.Path(dir_okay=False))
+@click.option("--sub-string-out",help='A part of the row (typically a path) you want substituted by sub-string-in', type=click.STRING, default='')
+@click.option("--sub-string-in",help='A part of the row (typically a path) you want substituted instead of sub-string-out', type=click.STRING, default='')
+def main(configuration, output, index_directory, index_file, search_subdirectories, illum_only, illum, illum_directory, plate_id, illum_filetype, illum_output, sub_string_out, sub_string_in):
+    headless(configuration, output, index_directory, index_file, search_subdirectories, illum_only, illum, illum_directory, plate_id, illum_filetype, illum_output, sub_string_out, sub_string_in)
+    
