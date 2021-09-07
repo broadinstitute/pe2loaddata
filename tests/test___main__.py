@@ -34,3 +34,9 @@ def test_with_directory():
     assert result.exit_code == 0
 
     os.remove("test.csv")
+
+def test_with_import():
+    assert not os.path.exists("test.csv")
+    src.pe2loaddata.__main__.headless("tests/data/config.yml","test.csv",index_file="tests/data/images/Index.idx.xml",index_directory=os.curdir)
+    assert os.path.exists("test.csv")
+    os.remove("test.csv")

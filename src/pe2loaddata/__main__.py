@@ -43,7 +43,7 @@ illum_output_help = """
 The destination file for the illum output if both pe2loaddata and append illum are being run
 """
 
-def headless(configuration, output, index_directory, index_file, search_subdirectories, illum_only, illum, illum_directory, plate_id, illum_filetype, illum_output, sub_string_out, sub_string_in):
+def headless(configuration, output, index_directory=False, index_file=False, search_subdirectories=False, illum_only=False, illum=False, illum_directory=False, plate_id=False, illum_filetype=False, illum_output=False, sub_string_out='', sub_string_in=''):
     channels, metadata = transformer.load_config(configuration)
 
     # Strip spaces because XML parser is broken
