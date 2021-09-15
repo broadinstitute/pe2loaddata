@@ -93,8 +93,8 @@ def headless(
 
                 s3 = boto3.client("s3")
                 # Download index file to output directory
-                index_file_key = index_file.split(f"s3://{bucket}/")[1]
-                output_dir = output.split(project_name)[0]
+                index_file_key = index_file.split(f"s3://")[1].split("/",1)[1]
+                output_dir = os.path.dirname(output)
                 index_file_local = output_dir + "Index.idx.xml"
                 with open(index_file_local, "wb") as f:
                     try:
