@@ -11,15 +11,15 @@ from . import transformer
 from . import append_illum_cols
 
 index_directory_help = """
-directory containing the index file and images
+directory containing the index file and images. If on s3, use full s3 URI, starting with 's3://'
 """
 
 index_file_help = """
-the Phenix index XML metadata file
+the Phenix index XML metadata file. If on s3, use full s3 URI, starting with 's3://'
 """
 
 search_subdirectories_help = """
-Look for image files in the index-directory and subdirectories
+Look for image files in the index-directory and subdirectories. Default is false; set to true if files are on s3.
 """
 
 illum_only_help = """
@@ -68,12 +68,38 @@ def headless(configuration, output, index_directory=False, index_file=False, sea
     if not illum_only:
         if search_subdirectories:
             if 's3' in index_file:
+                if not index_directory:
+                    print("You must also set the --index_directory to use an index_file on S3.")
+                    return
                 import boto3
-                #make sure both index_file and index_directory are set
-                #download index file to tmp - maybe set the directory to save to via the output file's directory
-                #also do some stuff to use boto3 to search the index_directory
-                #the files should then be set to a dictionary (paths) where the key is the file name and the value is the "path/to/the/file/name"
-                #then delete the extra downoaded index file
+                import botocore
+                s3 = boto3.client("s3")
+                # Download index file to output direcotry and reset path to local copy
+                index_file_key = index_file.split(f"s3://{bucket}/")[1]
+                output_dir = output.split(project_name)[0]
+                index_file = output_dir + "Index.idx.xml"
+                with open(index_file, "wb") as f:
+                    try:
+                        s3.download_fileobj(bucket, index_file, f)
+                    except botocore.exceptions.ClientError as error:
+                        print("Can't download the xml file. Check file location and permissions.")
+                        print(f"Looking for index_file at {index_file}")
+                        return
+                # Create paths dictionary
+                index_directory_key = index_directory.split(f"s3://{bucket}/")[1]
+                paginator = s3.get_paginator("list_objects_v2")
+                pages = paginator.paginate(Bucket=bucket, Prefix=index_directory_key)
+                try:
+                    for page in pages:
+                        for x in page["Contents"]:
+                            path = x["Key"]
+                            filename = path.rsplit('/', 1)[1]
+                            if filename.endswith(".tiff"):
+                                paths[filename] = path
+                except KeyError:
+                    print("Listing files in s3 directory failed.")
+                    return
+                os.remove(index_file)
             else:
                 for dir_root, directories, filenames in os.walk(index_directory):
                     for filename in filenames:
@@ -93,7 +119,7 @@ def headless(configuration, output, index_directory=False, index_file=False, sea
             print("You must set the --illum-directory, --plate-id, and --illum-output flags when using the illum options in pe2loaddata")
 
         else:
-            
+
             if not os.path.exists(os.path.dirname(illum_output)):
                 os.makedirs(os.path.dirname(illum_output))
 
@@ -130,4 +156,3 @@ def headless(configuration, output, index_directory=False, index_file=False, sea
 @click.option("--sub-string-in",help='A part of the row (typically a path) you want substituted instead of sub-string-out', type=click.STRING, default='')
 def main(configuration, output, index_directory, index_file, search_subdirectories, illum_only, illum, illum_directory, plate_id, illum_filetype, illum_output, sub_string_out, sub_string_in):
     headless(configuration, output, index_directory, index_file, search_subdirectories, illum_only, illum, illum_directory, plate_id, illum_filetype, illum_output, sub_string_out, sub_string_in)
-    
