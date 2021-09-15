@@ -90,6 +90,7 @@ def headless(
                     return
                 import boto3
                 import botocore
+
                 s3 = boto3.client("s3")
                 # Download index file to output directory
                 index_file_key = index_file.split(f"s3://{bucket}/")[1]
