@@ -43,7 +43,22 @@ illum_output_help = """
 The destination file for the illum output if both pe2loaddata and append illum are being run
 """
 
-def headless(configuration, output, index_directory=False, index_file=False, search_subdirectories=False, illum_only=False, illum=False, illum_directory=False, plate_id=False, illum_filetype=False, illum_output=False, sub_string_out='', sub_string_in=''):
+
+def headless(
+    configuration,
+    output,
+    index_directory=False,
+    index_file=False,
+    search_subdirectories=False,
+    illum_only=False,
+    illum=False,
+    illum_directory=False,
+    plate_id=False,
+    illum_filetype=False,
+    illum_output=False,
+    sub_string_out="",
+    sub_string_in="",
+):
     channels, metadata = transformer.load_config(configuration)
 
     # Strip spaces because XML parser is broken
@@ -62,17 +77,20 @@ def headless(configuration, output, index_directory=False, index_file=False, sea
 
     paths = {}
 
-    if os.path.dirname(output) != '' and not os.path.exists(os.path.dirname(output)):
+    if os.path.dirname(output) != "" and not os.path.exists(os.path.dirname(output)):
         os.makedirs(os.path.dirname(output))
 
     if not illum_only:
         if search_subdirectories:
-            if 's3' in index_file:
+            if "s3" in index_file:
                 if not index_directory:
-                    print("You must also set the --index_directory to use an index_file on S3.")
+                    print(
+                        "You must also set the --index_directory to use an index_file on S3."
+                    )
                     return
                 import boto3
                 import botocore
+
                 s3 = boto3.client("s3")
                 # Download index file to output direcotry and reset path to local copy
                 index_file_key = index_file.split(f"s3://{bucket}/")[1]
@@ -82,7 +100,9 @@ def headless(configuration, output, index_directory=False, index_file=False, sea
                     try:
                         s3.download_fileobj(bucket, index_file, f)
                     except botocore.exceptions.ClientError as error:
-                        print("Can't download the xml file. Check file location and permissions.")
+                        print(
+                            "Can't download the xml file. Check file location and permissions."
+                        )
                         print(f"Looking for index_file at {index_file}")
                         return
                 # Create paths dictionary
@@ -93,7 +113,7 @@ def headless(configuration, output, index_directory=False, index_file=False, sea
                     for page in pages:
                         for x in page["Contents"]:
                             path = x["Key"]
-                            filename = path.rsplit('/', 1)[1]
+                            filename = path.rsplit("/", 1)[1]
                             if filename.endswith(".tiff"):
                                 paths[filename] = path
                 except KeyError:
@@ -110,32 +130,54 @@ def headless(configuration, output, index_directory=False, index_file=False, sea
                 paths[filename] = index_directory
 
         with open(output, "w") as fd:
-            writer = csv.writer(fd, lineterminator='\n')
+            writer = csv.writer(fd, lineterminator="\n")
 
-            transformer.write_csv(writer, images, plates, wells, channels, metadata, paths, sub_string_out, sub_string_in)
+            transformer.write_csv(
+                writer,
+                images,
+                plates,
+                wells,
+                channels,
+                metadata,
+                paths,
+                sub_string_out,
+                sub_string_in,
+            )
 
     if illum_only or illum:
-        if not all([illum_directory,plate_id,illum_output]):
-            print("You must set the --illum-directory, --plate-id, and --illum-output flags when using the illum options in pe2loaddata")
+        if not all([illum_directory, plate_id, illum_output]):
+            print(
+                "You must set the --illum-directory, --plate-id, and --illum-output flags when using the illum options in pe2loaddata"
+            )
 
         else:
 
             if not os.path.exists(os.path.dirname(illum_output)):
                 os.makedirs(os.path.dirname(illum_output))
 
-            with open(output,'r') as fd:
+            with open(output, "r") as fd:
                 nrows = sum(1 for _ in fd) - 1
 
             tmpdir = tempfile.mkdtemp()
 
-            with open(os.path.join(tmpdir, 'illum.csv'), 'w') as fd:
-                illumwriter = csv.writer(fd, lineterminator='\n')
-                append_illum_cols.write_csv(illumwriter, channels, illum_directory, plate_id, nrows, illum_filetype, sub_string_out, sub_string_in)
+            with open(os.path.join(tmpdir, "illum.csv"), "w") as fd:
+                illumwriter = csv.writer(fd, lineterminator="\n")
+                append_illum_cols.write_csv(
+                    illumwriter,
+                    channels,
+                    illum_directory,
+                    plate_id,
+                    nrows,
+                    illum_filetype,
+                    sub_string_out,
+                    sub_string_in,
+                )
 
-            os.system('paste -d "," {} {} > {}'.format(output,
-                                               os.path.join(tmpdir, 'illum.csv'),
-                                               illum_output
-                                               ))
+            os.system(
+                'paste -d "," {} {} > {}'.format(
+                    output, os.path.join(tmpdir, "illum.csv"), illum_output
+                )
+            )
 
             shutil.rmtree(tmpdir)
 
@@ -143,16 +185,68 @@ def headless(configuration, output, index_directory=False, index_file=False, sea
 @click.command()
 @click.argument("configuration", type=click.Path(exists=True, dir_okay=False))
 @click.argument("output", type=click.Path(dir_okay=False))
-@click.option("--index-directory", default=os.path.curdir, help=index_directory_help, type=click.Path(exists=True))
-@click.option("--index-file", help=index_file_help, type=click.Path(exists=True, dir_okay=False))
+@click.option(
+    "--index-directory",
+    default=os.path.curdir,
+    help=index_directory_help,
+    type=click.Path(exists=True),
+)
+@click.option(
+    "--index-file", help=index_file_help, type=click.Path(exists=True, dir_okay=False)
+)
 @click.option("--search-subdirectories", help=search_subdirectories_help, is_flag=True)
-@click.option("--illum-only",help=illum_only_help, default=False, is_flag=True)
-@click.option("--illum/--no-illum",help=illum_help, default=False)
-@click.option("--illum-directory", default=os.path.curdir, help=illum_directory_help, type=click.Path(exists=False))
+@click.option("--illum-only", help=illum_only_help, default=False, is_flag=True)
+@click.option("--illum/--no-illum", help=illum_help, default=False)
+@click.option(
+    "--illum-directory",
+    default=os.path.curdir,
+    help=illum_directory_help,
+    type=click.Path(exists=False),
+)
 @click.option("--plate-id", help="Plate ID", type=click.STRING)
-@click.option("--illum-filetype", help=illum_filetype_help, default='.npy', type=click.STRING)
+@click.option(
+    "--illum-filetype", help=illum_filetype_help, default=".npy", type=click.STRING
+)
 @click.option("--illum-output", help=illum_output_help, type=click.Path(dir_okay=False))
-@click.option("--sub-string-out",help='A part of the row (typically a path) you want substituted by sub-string-in', type=click.STRING, default='')
-@click.option("--sub-string-in",help='A part of the row (typically a path) you want substituted instead of sub-string-out', type=click.STRING, default='')
-def main(configuration, output, index_directory, index_file, search_subdirectories, illum_only, illum, illum_directory, plate_id, illum_filetype, illum_output, sub_string_out, sub_string_in):
-    headless(configuration, output, index_directory, index_file, search_subdirectories, illum_only, illum, illum_directory, plate_id, illum_filetype, illum_output, sub_string_out, sub_string_in)
+@click.option(
+    "--sub-string-out",
+    help="A part of the row (typically a path) you want substituted by sub-string-in",
+    type=click.STRING,
+    default="",
+)
+@click.option(
+    "--sub-string-in",
+    help="A part of the row (typically a path) you want substituted instead of sub-string-out",
+    type=click.STRING,
+    default="",
+)
+def main(
+    configuration,
+    output,
+    index_directory,
+    index_file,
+    search_subdirectories,
+    illum_only,
+    illum,
+    illum_directory,
+    plate_id,
+    illum_filetype,
+    illum_output,
+    sub_string_out,
+    sub_string_in,
+):
+    headless(
+        configuration,
+        output,
+        index_directory,
+        index_file,
+        search_subdirectories,
+        illum_only,
+        illum,
+        illum_directory,
+        plate_id,
+        illum_filetype,
+        illum_output,
+        sub_string_out,
+        sub_string_in,
+    )
