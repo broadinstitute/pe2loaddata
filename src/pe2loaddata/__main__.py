@@ -67,6 +67,31 @@ def headless(
     if not index_file:
         index_file = os.path.join(index_directory, "Index.idx.xml")
 
+    if "s3" in index_file:
+        remote = True
+        if not index_directory:
+            print(
+                "You must also set the --index_directory to use an index_file on S3."
+            )
+            return
+        import boto3
+        import botocore
+
+        s3 = boto3.client("s3")
+        # Download index file to output directory
+        bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
+        output_dir = os.path.dirname(output)
+        index_file = output_dir + "Index.idx.xml"
+        with open(index_file, "wb") as f:
+            try:
+                s3.download_fileobj(bucket, index_file_key, f)
+            except botocore.exceptions.ClientError as error:
+                print(
+                    "Can't download the xml file. Check file location and permissions."
+                )
+                print(f"Looking for index_file at {index_file_key}")
+                return
+
     handler = content.Handler()
 
     xml.sax.parse(index_file, handler)
@@ -82,29 +107,7 @@ def headless(
 
     if not illum_only:
         if search_subdirectories:
-            if "s3" in index_file:
-                if not index_directory:
-                    print(
-                        "You must also set the --index_directory to use an index_file on S3."
-                    )
-                    return
-                import boto3
-                import botocore
-
-                s3 = boto3.client("s3")
-                # Download index file to output directory
-                bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
-                output_dir = os.path.dirname(output)
-                index_file_local = output_dir + "Index.idx.xml"
-                with open(index_file_local, "wb") as f:
-                    try:
-                        s3.download_fileobj(bucket, index_file_key, f)
-                    except botocore.exceptions.ClientError as error:
-                        print(
-                            "Can't download the xml file. Check file location and permissions."
-                        )
-                        print(f"Looking for index_file at {index_file}")
-                        return
+            if remote:
                 # Create paths dictionary
                 index_directory_key = index_directory.split(f"s3://{bucket}/")[1]
                 paginator = s3.get_paginator("list_objects_v2")
