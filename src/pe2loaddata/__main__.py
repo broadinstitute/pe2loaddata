@@ -81,7 +81,7 @@ def headless(
         # Download index file to output directory
         bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
         output_dir = os.path.dirname(output)
-        index_file = output_dir + "Index.idx.xml"
+        index_file = output_dir + "/Index.idx.xml"
         with open(index_file, "wb") as f:
             try:
                 s3.download_fileobj(bucket, index_file_key, f)
