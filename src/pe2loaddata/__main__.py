@@ -61,6 +61,9 @@ def headless(
 ):
     channels, metadata = transformer.load_config(configuration)
 
+    if os.path.dirname(output) != "" and not os.path.exists(os.path.dirname(output)):
+        os.makedirs(os.path.dirname(output))
+
     # Strip spaces because XML parser is broken
     channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
 
@@ -101,9 +104,6 @@ def headless(
     wells = handler.root.wells.wells
 
     paths = {}
-
-    if os.path.dirname(output) != "" and not os.path.exists(os.path.dirname(output)):
-        os.makedirs(os.path.dirname(output))
 
     if not illum_only:
         if search_subdirectories:
