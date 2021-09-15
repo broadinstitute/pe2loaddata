@@ -90,15 +90,14 @@ def headless(
                     return
                 import boto3
                 import botocore
-
                 s3 = boto3.client("s3")
-                # Download index file to output direcotry and reset path to local copy
+                # Download index file to output directory
                 index_file_key = index_file.split(f"s3://{bucket}/")[1]
                 output_dir = output.split(project_name)[0]
-                index_file = output_dir + "Index.idx.xml"
-                with open(index_file, "wb") as f:
+                index_file_local = output_dir + "Index.idx.xml"
+                with open(index_file_local, "wb") as f:
                     try:
-                        s3.download_fileobj(bucket, index_file, f)
+                        s3.download_fileobj(bucket, index_file_key, f)
                     except botocore.exceptions.ClientError as error:
                         print(
                             "Can't download the xml file. Check file location and permissions."
@@ -119,7 +118,7 @@ def headless(
                 except KeyError:
                     print("Listing files in s3 directory failed.")
                     return
-                os.remove(index_file)
+                os.remove(index_file_local)
             else:
                 for dir_root, directories, filenames in os.walk(index_directory):
                     for filename in filenames:
