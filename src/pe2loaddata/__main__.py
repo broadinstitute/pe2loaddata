@@ -67,18 +67,26 @@ def headless(configuration, output, index_directory=False, index_file=False, sea
 
     if not illum_only:
         if search_subdirectories:
-            for dir_root, directories, filenames in os.walk(index_directory):
-                for filename in filenames:
-                    if filename.endswith(".tiff"):
-                        paths[filename] = dir_root
+            if 's3' in index_file:
+                import boto3
+                #make sure both index_file and index_directory are set
+                #download index file to tmp - maybe set the directory to save to via the output file's directory
+                #also do some stuff to use boto3 to search the index_directory
+                #the files should then be set to a dictionary (paths) where the key is the file name and the value is the "path/to/the/file/name"
+                #then delete the extra downoaded index file
+            else:
+                for dir_root, directories, filenames in os.walk(index_directory):
+                    for filename in filenames:
+                        if filename.endswith(".tiff"):
+                            paths[filename] = dir_root
         else:
             for filename in os.listdir(index_directory):
                 paths[filename] = index_directory
 
-            with open(output, "w") as fd:
-                writer = csv.writer(fd, lineterminator='\n')
+        with open(output, "w") as fd:
+            writer = csv.writer(fd, lineterminator='\n')
 
-                transformer.write_csv(writer, images, plates, wells, channels, metadata, paths, sub_string_out, sub_string_in)
+            transformer.write_csv(writer, images, plates, wells, channels, metadata, paths, sub_string_out, sub_string_in)
 
     if illum_only or illum:
         if not all([illum_directory,plate_id,illum_output]):
