@@ -115,8 +115,8 @@ def headless(
                 try:
                     for page in pages:
                         for x in page["Contents"]:
-                            path = x["Key"]
-                            filename = path.rsplit("/", 1)[1]
+                            fullpath = x["Key"]
+                            path, filename = fullpath.rsplit("/", 1)
                             if filename.endswith(".tiff"):
                                 paths[filename] = path
                 except KeyError:
