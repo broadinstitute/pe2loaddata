@@ -54,7 +54,7 @@ def headless(
     illum=False,
     illum_directory=False,
     plate_id=False,
-    illum_filetype=False,
+    illum_filetype='.npy',
     illum_output=False,
     sub_string_out="",
     sub_string_in="",
