@@ -122,7 +122,7 @@ def headless(
                 except KeyError:
                     print("Listing files in s3 directory failed.")
                     return
-                os.remove(index_file_local)
+                os.remove(index_file)
             else:
                 for dir_root, directories, filenames in os.walk(index_directory):
                     for filename in filenames:
