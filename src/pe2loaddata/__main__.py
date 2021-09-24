@@ -105,6 +105,12 @@ def headless(
 
     paths = {}
 
+
+    output_path = os.path.dirname(output)
+    if not output_path == "":
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)    
+
     if not illum_only:
         if search_subdirectories:
             if remote:
@@ -155,8 +161,11 @@ def headless(
 
         else:
 
-            if not os.path.exists(os.path.dirname(illum_output)):
-                os.makedirs(os.path.dirname(illum_output))
+        
+            illum_output_path = os.path.dirname(illum_output)
+            if not illum_output_path == "":
+                if not os.path.exists(illum_output_path):
+                    os.makedirs(illum_output_path)
 
             with open(output, "r") as fd:
                 nrows = sum(1 for _ in fd) - 1
@@ -183,6 +192,7 @@ def headless(
             )
 
             shutil.rmtree(tmpdir)
+
 
 
 @click.command()
@@ -253,3 +263,4 @@ def main(
         sub_string_out,
         sub_string_in,
     )
+
