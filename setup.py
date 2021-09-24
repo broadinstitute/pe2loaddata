@@ -16,7 +16,8 @@ setuptools.setup(
         "PyYAML>=5.3.1"
     ],
     name="pe2loaddata",
-    packages=setuptools.find_packages(),
+    packages=setuptools.find_packages(where='src'),
+    package_dir={"": "src"},
     python_requires='>=3.8',
-    version="0.1.0"
+    version="0.1.1"
 )
