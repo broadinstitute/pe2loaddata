@@ -61,8 +61,10 @@ def headless(
 ):
     channels, metadata = transformer.load_config(configuration)
 
-    if os.path.dirname(output) != "" and not os.path.exists(os.path.dirname(output)):
-        os.makedirs(os.path.dirname(output))
+    output_path = os.path.dirname(output)
+    if not output_path == "":
+        if not os.path.exists(output_path):
+            os.makedirs(output_path)  
 
     # Strip spaces because XML parser is broken
     channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
@@ -83,8 +85,7 @@ def headless(
         s3 = boto3.client("s3")
         # Download index file to output directory
         bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
-        output_dir = os.path.dirname(output)
-        index_file = output_dir + "/Index.idx.xml"
+        index_file = output_path + "/Index.idx.xml"
         with open(index_file, "wb") as f:
             try:
                 s3.download_fileobj(bucket, index_file_key, f)
@@ -103,13 +104,7 @@ def headless(
     plates = handler.root.plates.plates
     wells = handler.root.wells.wells
 
-    paths = {}
-
-
-    output_path = os.path.dirname(output)
-    if not output_path == "":
-        if not os.path.exists(output_path):
-            os.makedirs(output_path)    
+    paths = {}  
 
     if not illum_only:
         if search_subdirectories:
