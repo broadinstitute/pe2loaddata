@@ -3,7 +3,7 @@ import setuptools
 setuptools.setup(
     entry_points={
         'console_scripts': [
-            "pe2loaddata=src.pe2loaddata.__main__:main",
+            "pe2loaddata=pe2loaddata.__main__:main",
         ],
     },
     extras_require={
@@ -19,5 +19,5 @@ setuptools.setup(
     packages=setuptools.find_packages(where='src'),
     package_dir={"": "src"},
     python_requires='>=3.8',
-    version="0.1.1"
+    version="0.1.2"
 )
