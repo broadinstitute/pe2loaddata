@@ -13,7 +13,7 @@ To run CSV creation based on the XML file:
 
     pe2loaddata --index-directory <index-directory> config.yml output.csv
 
-where <index-directory> is the directory containing the Index.idx.xml file and the images (any image set that is not complete will not be written to the CSV), config.yml is the LoadData configuration file and output.csv is the CSV that will be generated.
+where \<index-directory\> is the directory containing the Index.idx.xml file and the images (any image set that is not complete will not be written to the CSV), config.yml is the LoadData configuration file and output.csv is the CSV that will be generated.
 
 The config.yml file lets you name the channels you want to save and lets you pull metadata out of the image. An example:
 
@@ -66,7 +66,7 @@ the CellProfiler names in your config file to start with `Orig`, which will be r
 
     pe2loaddata --index-directory <index-directory> config.yml output.csv --illum --illum-directory <illum-directory> --plate-id <plate-id> --illum-output output_with_illum.csv
 
-where <illum-directory> is the directory where illumination files are (or will be) and <plate-id> is the plate ID that will be used by CellProfiler in your illumination files' names.
+where \<illum-directory\> is the directory where illumination files are (or will be) and \<plate-id\> is the plate ID that will be used by CellProfiler in your illumination files' names.
     
 If you've already generated `output.csv` and want to only add the illum files to it, you can run with 
 
