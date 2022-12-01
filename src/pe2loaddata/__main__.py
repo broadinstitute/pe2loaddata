@@ -58,6 +58,7 @@ def headless(
     illum_output=False,
     sub_string_out="",
     sub_string_in="",
+    no_sign=False,
 ):
     channels, metadata = transformer.load_config(configuration)
 
@@ -79,10 +80,16 @@ def headless(
                 "You must also set the --index_directory to use an index_file on S3."
             )
             return
+
         import boto3
         import botocore
-
-        s3 = boto3.client("s3")
+        if no_sign:
+            from botocore import UNSIGNED
+            from botocore.config import Config
+            s3 = boto3.client('s3', config=Config(signature_version=UNSIGNED))
+        else:
+            s3 = boto3.client("s3")
+            
         # Download index file to output directory
         bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
         index_file = output_path + "/Index.idx.xml"
@@ -228,6 +235,12 @@ def headless(
     type=click.STRING,
     default="",
 )
+@click.option(
+    "--no-sign",
+    help="For S3 remote, when listing, do not sign request",
+    default=False, 
+    is_flag=True
+)
 def main(
     configuration,
     output,
@@ -242,6 +255,7 @@ def main(
     illum_output,
     sub_string_out,
     sub_string_in,
+    no_sign,
 ):
     headless(
         configuration,
@@ -257,5 +271,6 @@ def main(
         illum_output,
         sub_string_out,
         sub_string_in,
+        no_sign,
     )
 
