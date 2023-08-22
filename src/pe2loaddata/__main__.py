@@ -181,7 +181,7 @@ def headless(
                 )
 
             os.system(
-                'paste -d "," {} {} > {}'.format(
+                'paste -d "," "{}" "{}" > "{}"'.format(
                     output, os.path.join(tmpdir, "illum.csv"), illum_output
                 )
             )
