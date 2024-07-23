@@ -70,7 +70,17 @@ def headless(
     channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
 
     if not index_file:
-        index_file = os.path.join(index_directory, "Index.idx.xml")
+        for dir_root, directories, filenames in os.walk(index_directory):
+            target_dir = 'Images'
+            directories[:] = [d for d in directories if d in target_dir]
+            for directory in directories:
+                dir_path = os.path.join(dir_root, directory)
+                for root, dirs, files in os.walk(dir_path):
+                    for filename in files:
+                        if filename.endswith(".xml"):
+                            index_filename = filename
+            
+        index_file = os.path.join(index_directory, index_filename)
 
     if "s3" in index_file:
         remote = True
@@ -84,8 +94,16 @@ def headless(
 
         s3 = boto3.client("s3")
         # Download index file to output directory
+        bucket, prefix = index_directory.split(f"s3://")[1].split("/",1)
+        prefix = prefix + '/Images'
+        index_file_new = s3.list_objects(Bucket=bucket, Prefix=prefix, Delimiter='.xml', RequestPayer='no-sign-request')
+        index_file_new = index_file_new.get('CommonPrefixes')
+        index_file_new = [x['Prefix'] for x in index_file_new]
+        index_file_new = [x.replace(prefix,'').replace('/','') for x in index_file_new]
+        index_file = index_directory + '/' + ''.join(index_file_new)
+
         bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
-        index_file = output_path + "/Index.idx.xml"
+        index_file = output_path + "/" + ''.join(index_file_new)
         with open(index_file, "wb") as f:
             try:
                 s3.download_fileobj(bucket, index_file_key, f)
