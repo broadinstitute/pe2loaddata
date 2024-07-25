@@ -71,6 +71,10 @@ def headless(
 
     if not index_file:       
         index_file = os.path.join(index_directory, "Index.xml")
+    
+        if "s3" not in index_file:
+            if not os.path.exists(index_file):
+                index_file = os.path.join(index_directory, "Index.idx.xml")
 
     if "s3" in index_file:
         remote = True
@@ -102,11 +106,9 @@ def headless(
                 print(f"Looking for index_file at {index_file_key}")
                 return
 
-
     handler = content.Handler()
-    
-    if os.path.exists(index_file):
-        xml.sax.parse(index_file, handler)
+
+    xml.sax.parse(index_file, handler)
 
     images = handler.root.images.images
     plates = handler.root.plates.plates
