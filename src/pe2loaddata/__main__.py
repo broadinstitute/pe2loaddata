@@ -93,7 +93,7 @@ def headless(
             index_file = output_path + "/Index.xml"
             with open(index_file, "wb") as f:
                 s3.download_fileobj(bucket, index_file_key, f)
-        except:
+        except botocore.exceptions.ClientError as error:
             print('Index.xml not found. Looking for Index.idx.xml file')
             try:
                 # Attempt to download Index.idx.xml if Index.xml is not found
@@ -101,7 +101,7 @@ def headless(
                 with open(index_file, "wb") as f:
                     index_file_key = index_file_key.replace("Index.xml", "Index.idx.xml")
                     s3.download_fileobj(bucket, index_file_key, f)
-            except:
+            except botocore.exceptions.ClientError as error:
                 print('Index.idx.xml not found') #have to add better print statements
                 print(f"Looking for index_file at {index_file_key}")
                 return
