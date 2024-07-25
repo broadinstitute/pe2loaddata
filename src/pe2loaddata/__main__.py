@@ -90,9 +90,8 @@ def headless(
         # Download index file to output directory
         try:
             bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
-            index_file = output_path + "/Index.xml"
-            with open(index_file, "wb") as f:
-                s3.download_fileobj(bucket, index_file_key, f)
+            index_file = os.path.join(output_path, "Index.xml")
+            s3.download_file(bucket, index_file_key, index_file)
         except botocore.exceptions.ClientError as error:
             print('Index.xml not found. Looking for Index.idx.xml file')
             try:
