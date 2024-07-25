@@ -69,18 +69,8 @@ def headless(
     # Strip spaces because XML parser is broken
     channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
 
-    if not index_file:
-        for dir_root, directories, filenames in os.walk(index_directory):
-            target_dir = 'Images'
-            directories[:] = [d for d in directories if d in target_dir]
-            for directory in directories:
-                dir_path = os.path.join(dir_root, directory)
-                for root, dirs, files in os.walk(dir_path):
-                    for filename in files:
-                        if filename.endswith(".xml"):
-                            index_filename = filename
-            
-        index_file = os.path.join(index_directory, index_filename)
+    if not index_file:       
+        index_file = os.path.join(index_directory, "Index.xml")
 
     if "s3" in index_file:
         remote = True
@@ -94,29 +84,29 @@ def headless(
 
         s3 = boto3.client("s3")
         # Download index file to output directory
-        bucket, prefix = index_directory.split(f"s3://")[1].split("/",1)
-        prefix = prefix + '/Images'
-        index_file_new = s3.list_objects(Bucket=bucket, Prefix=prefix, Delimiter='.xml', RequestPayer='no-sign-request')
-        index_file_new = index_file_new.get('CommonPrefixes')
-        index_file_new = [x['Prefix'] for x in index_file_new]
-        index_file_new = [x.replace(prefix,'').replace('/','') for x in index_file_new]
-        index_file = index_directory + '/' + ''.join(index_file_new)
-
-        bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
-        index_file = output_path + "/" + ''.join(index_file_new)
-        with open(index_file, "wb") as f:
-            try:
+        try:
+            bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
+            index_file = output_path + "/Index.xml"
+            with open(index_file, "wb") as f:
                 s3.download_fileobj(bucket, index_file_key, f)
-            except botocore.exceptions.ClientError as error:
-                print(
-                    "Can't download the xml file. Check file location and permissions."
-                )
+        except:
+            print('Index.xml not found. Looking for Index.idx.xml file')
+            try:
+                # Attempt to download Index.idx.xml if Index.xml is not found
+                index_file = output_path + "/Index.idx.xml"
+                with open(index_file, "wb") as f:
+                    index_file_key = index_file_key.replace("Index.xml", "Index.idx.xml")
+                    s3.download_fileobj(bucket, index_file_key, f)
+            except:
+                print('Index.idx.xml not found') #have to add better print statements
                 print(f"Looking for index_file at {index_file_key}")
                 return
 
-    handler = content.Handler()
 
-    xml.sax.parse(index_file, handler)
+    handler = content.Handler()
+    
+    if os.path.exists(index_file):
+        xml.sax.parse(index_file, handler)
 
     images = handler.root.images.images
     plates = handler.root.plates.plates
