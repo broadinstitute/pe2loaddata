@@ -87,13 +87,18 @@ def load_config(config_file: Union[bytes, str, PathLike]) -> (Any, Any):
 
     channels = config['channels']
 
+    channelid = config['channelid']
+
     metadata = config.get('metadata', {})
 
-    return channels, metadata
+    return channels, channelid, metadata
 
 
-def write_csv(writer, images, plates, wells, channels, metadata, paths, sub_string_out='', sub_string_in=''):
-    header = sum([["_".join((prefix, channels[channel])) for prefix in ["FileName", "PathName"]] for channel in sorted(channels.keys())], [])
+def write_csv(writer, images, plates, wells, channels, channelid, metadata, paths, sub_string_out='', sub_string_in=''):
+    if channels != '':
+        header = sum([["_".join((prefix, channels[channel])) for prefix in ["FileName", "PathName"]] for channel in sorted(channels.keys())], [])
+    else:
+        header = sum([["_".join((prefix, channelid[channel])) for prefix in ["FileName", "PathName"]] for channel in sorted(channelid.keys())], [])
 
     header += ["Metadata_Plate", "Metadata_Well", "Metadata_Site"]
 
@@ -120,9 +125,14 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths, sub_stri
                     # writing out field_id.
                     field_id = '%02d-%02d' % (int(image.metadata["FieldID"]), int(image.metadata.get("PlaneID", 1)))
 
-                    channel = image.channel_name
-
-                    assert channel in channels
+                    if channels != '':
+                        channel = image.channel_name
+                        
+                        assert channel in channels
+                    else:
+                        channel = image.metadata['ChannelID']
+                        
+                        assert channel in channelid
 
                     if field_id not in fields:
                         fields[field_id] = {channel: image}
@@ -135,32 +145,67 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths, sub_stri
                 d = fields[field]
                 row = []
 
-                for channel in sorted(channels.keys()):
-                    try:
-                        image = d[channel]
+                if channels != '':
 
-                        file_name = image.metadata["URL"]
+                    for channel in sorted(channels.keys()):
+                        try:
+                            image = d[channel]
 
-                        row += [file_name, paths[file_name]]
-                    except Exception as e:
-                        logging.debug("Channel = {}; Field = {}; Plate = {}".format(channel, field, plate_name))
+                            file_name = image.metadata["URL"]
 
-                        print(e)
+                            row += [file_name, paths[file_name]]
+                        except Exception as e:
+                            logging.debug("Channel = {}; Field = {}; Plate = {}".format(channel, field, plate_name))
 
-                        row = []
+                            print(e)
 
-                        break
+                            row = []
 
-                if not row:
-                    continue
+                            break
 
-                # strip out the PlaneID from field before writing the row
-                row += [plate_name, well_name, str(int(field[:2]))]
+                    if not row:
+                        continue
 
-                for key in sorted(metadata.keys()):
-                    row.append(image.metadata[key])
+                    # strip out the PlaneID from field before writing the row
+                    row += [plate_name, well_name, str(int(field[:2]))]
 
-                if sub_string_in != '' and sub_string_out != '':
-                    row = [x.replace(sub_string_out,sub_string_in) for x in row]
+                    for key in sorted(metadata.keys()):
+                        row.append(image.metadata[key])
 
-                writer.writerow(row)
+                    if sub_string_in != '' and sub_string_out != '':
+                        row = [x.replace(sub_string_out,sub_string_in) for x in row]
+
+                    writer.writerow(row)
+
+                else:
+                    for channel in sorted(channelid.keys()):
+                        try:
+                            image = d[channel]
+
+                            file_name = image.metadata["URL"]
+
+                            row += [file_name, paths[file_name]]
+                        except Exception as e:
+                            logging.debug("Channel = {}; Field = {}; Plate = {}".format(channel, field, plate_name))
+
+                            print(e)
+
+                            row = []
+
+                            break
+
+                    if not row:
+                        continue
+
+                    # strip out the PlaneID from field before writing the row
+                    row += [plate_name, well_name, str(int(field[:2]))]
+
+                    for key in sorted(metadata.keys()):
+                        row.append(image.metadata[key])
+
+                    if sub_string_in != '' and sub_string_out != '':
+                        row = [x.replace(sub_string_out,sub_string_in) for x in row]
+
+                
+                    writer.writerow(row)
+

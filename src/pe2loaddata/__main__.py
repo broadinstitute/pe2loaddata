@@ -59,7 +59,7 @@ def headless(
     sub_string_out="",
     sub_string_in="",
 ):
-    channels, metadata = transformer.load_config(configuration)
+    channels, channelid, metadata = transformer.load_config(configuration)
 
     output_path = os.path.dirname(output)
     if not output_path == "":
@@ -151,6 +151,7 @@ def headless(
                 plates,
                 wells,
                 channels,
+                channelid,
                 metadata,
                 paths,
                 sub_string_out,
@@ -181,6 +182,7 @@ def headless(
                 append_illum_cols.write_csv(
                     illumwriter,
                     channels,
+                    channelid,
                     illum_directory,
                     plate_id,
                     nrows,

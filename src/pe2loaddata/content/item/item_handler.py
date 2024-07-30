@@ -51,3 +51,5 @@ class ItemHandler(xml.sax.handler.ContentHandler):
         """
         channel = self.metadata["ChannelName"]
         return channel.replace(" ", "")
+    
+   
