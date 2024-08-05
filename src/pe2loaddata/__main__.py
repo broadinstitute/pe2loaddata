@@ -1,5 +1,6 @@
 import csv
 import os
+import glob
 import shutil
 import tempfile
 import xml.sax
@@ -72,10 +73,7 @@ def headless(
     if not index_file:       
         index_file = os.path.join(index_directory, "Index.xml")
     
-        if "s3" not in index_file:
-            if not os.path.exists(index_file):
-                index_file = os.path.join(index_directory, "Index.idx.xml")
-
+        
     if "s3" in index_file:
         remote = True
         if not index_directory:
@@ -104,6 +102,9 @@ def headless(
                 print('Index.idx.xml not found') #have to add better print statements
                 print(f"Looking for index_file at {index_file_key}")
                 return
+            
+    if "s3" not in index_file:
+        index_file = glob.glob(f"{index_directory}" + "/*.xml")
 
     handler = content.Handler()
 
