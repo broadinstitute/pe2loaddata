@@ -70,11 +70,8 @@ def headless(
     # Strip spaces because XML parser is broken
     channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
 
-    if not index_file:       
-        index_file = os.path.join(index_directory, "Index.xml")
-    
-        
-    if "s3" in index_file:
+           
+    if "s3" in index_file or "s3" in index_directory:
         remote = True
         if not index_directory:
             print(
@@ -103,7 +100,7 @@ def headless(
                 print(f"Looking for index_file at {index_file_key}")
                 return
             
-    if "s3" not in index_file:
+    else:
         index_file = glob.glob(f"{index_directory}" + "/*.xml")
 
     handler = content.Handler()
