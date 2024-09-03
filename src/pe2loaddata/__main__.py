@@ -71,7 +71,7 @@ def headless(
     channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
 
            
-    if "s3" in index_file or "s3" in index_directory:
+    if "s3" in index_directory:
         remote = True
         if not index_directory:
             print(
@@ -102,6 +102,9 @@ def headless(
             
     else:
         index_file = glob.glob(f"{index_directory}" + "/*.xml")
+
+    print(index_file)
+    index_file 
 
     handler = content.Handler()
 
@@ -267,4 +270,5 @@ def main(
         sub_string_out,
         sub_string_in,
     )
+
 
