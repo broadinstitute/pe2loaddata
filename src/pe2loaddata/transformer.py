@@ -139,7 +139,9 @@ def write_csv(writer, images, plates, wells, channels, channelid, metadata, path
                     else:
                         fields[field_id][channel] = image
                 except Exception as e:
-                    print(e)
+                    #print(image.channel_name)
+                    print('error at image step')
+                    #print(e)
 
             for field in sorted(fields):
                 d = fields[field]
@@ -154,10 +156,12 @@ def write_csv(writer, images, plates, wells, channels, channelid, metadata, path
                             file_name = image.metadata["URL"]
 
                             row += [file_name, paths[file_name]]
+                            print(channels)
                         except Exception as e:
                             logging.debug("Channel = {}; Field = {}; Plate = {}".format(channel, field, plate_name))
-
-                            print(e)
+                            #print(file_name)
+                            #print('error at field step')
+                            #print(e)
 
                             row = []
 
@@ -187,8 +191,11 @@ def write_csv(writer, images, plates, wells, channels, channelid, metadata, path
                             row += [file_name, paths[file_name]]
                         except Exception as e:
                             logging.debug("Channel = {}; Field = {}; Plate = {}".format(channel, field, plate_name))
-
-                            print(e)
+                            print(channelid.keys())
+                            #print(paths[file_name])
+                            #print(image.metadata["URL"])
+                            #print('error at else step')
+                            #print(e)
 
                             row = []
 
@@ -209,3 +216,4 @@ def write_csv(writer, images, plates, wells, channels, channelid, metadata, path
                 
                     writer.writerow(row)
 
+    #__import__("IPython").embed()

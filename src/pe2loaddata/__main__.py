@@ -68,7 +68,8 @@ def headless(
             os.makedirs(output_path)  
 
     # Strip spaces because XML parser is broken
-    channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
+    if channels != '':
+        channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
 
            
     if "s3" in index_directory:
@@ -101,8 +102,8 @@ def headless(
                 return
             
     else:
-        index_file = glob.glob(f"{index_directory}" + "/*.xml")
-
+        index_file = glob.glob(f"{index_directory}" + "/*.xml")[0]
+    #__import__("IPython").embed()
     print(index_file)
     index_file 
 
@@ -115,7 +116,7 @@ def headless(
     wells = handler.root.wells.wells
 
     paths = {}  
-
+    #print(paths)
     if not illum_only:
         if search_subdirectories:
             if remote:
@@ -130,6 +131,7 @@ def headless(
                             path, filename = fullpath.rsplit("/", 1)
                             if filename.endswith(".tiff"):
                                 paths[filename] = path
+                                print(fullpath)
                 except KeyError:
                     print("Listing files in s3 directory failed.")
                     return
@@ -142,7 +144,7 @@ def headless(
         else:
             for filename in os.listdir(index_directory):
                 paths[filename] = index_directory
-
+        print(paths)
         with open(output, "w") as fd:
             writer = csv.writer(fd, lineterminator="\n")
 
