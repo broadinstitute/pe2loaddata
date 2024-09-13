@@ -211,7 +211,7 @@ def headless(
     "--index-directory",
     default=os.path.curdir,
     help=index_directory_help,
-    type=click.Path(exists=True),
+    type=click.Path(exists=False),
 )
 @click.option(
     "--index-file", help=index_file_help, type=click.Path(exists=True, dir_okay=False)
