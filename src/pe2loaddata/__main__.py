@@ -87,19 +87,16 @@ def headless(
         import botocore
 
         s3 = boto3.client("s3")
-        #index_file = os.path.join(index_directory, "Index.xml")
         # Download index file to output directory
         try:
             bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
             index_file = os.path.join(output_path, "Index.xml")
-            #__import__("IPython").embed()
             s3.download_file(bucket, index_file_key, index_file)
         except botocore.exceptions.ClientError as error:
             print('Index.xml not found. Looking for Index.idx.xml file')
             try:
                 # Attempt to download Index.idx.xml if Index.xml is not found
                 index_file = output_path + r"/Index.idx.xml"
-                #__import__("IPython").embed()
                 with open(index_file, "wb") as f:
                     index_file_key = index_file_key.replace("Index.xml", "Index.idx.xml")
                     s3.download_fileobj(bucket, index_file_key, f)
@@ -110,10 +107,7 @@ def headless(
             
     else:
         index_file = glob.glob(f"{index_directory}" + "/*.xml")[0]
-    #__import__("IPython").embed()
-    #print(index_file)
-    index_file 
-
+    
     handler = content.Handler()
 
     xml.sax.parse(index_file, handler)
@@ -123,7 +117,6 @@ def headless(
     wells = handler.root.wells.wells
 
     paths = {}  
-    #print(paths)
     if not illum_only:
         if search_subdirectories:
             if remote:
@@ -138,7 +131,7 @@ def headless(
                             path, filename = fullpath.rsplit("/", 1)
                             if filename.endswith(".tiff"):
                                 paths[filename] = path
-                                #print(fullpath)
+                                
                 except KeyError:
                     print("Listing files in s3 directory failed.")
                     return
@@ -151,7 +144,7 @@ def headless(
         else:
             for filename in os.listdir(index_directory):
                 paths[filename] = index_directory
-        #print(paths)
+        
         with open(output, "w") as fd:
             writer = csv.writer(fd, lineterminator="\n")
 
