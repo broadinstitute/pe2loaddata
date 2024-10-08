@@ -63,6 +63,8 @@ def headless(
     channels, channelid, metadata = transformer.load_config(configuration)
 
     output_path = os.path.dirname(output)
+    #
+    #print(output_path,"output_path")
     if not output_path == "":
         if not os.path.exists(output_path):
             os.makedirs(output_path)  
@@ -79,20 +81,25 @@ def headless(
                 "You must also set the --index_directory to use an index_file on S3."
             )
             return
+        if not index_file:
+            index_file = os.path.join(index_directory,"Index.xml")
         import boto3
         import botocore
 
         s3 = boto3.client("s3")
+        #index_file = os.path.join(index_directory, "Index.xml")
         # Download index file to output directory
         try:
             bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
             index_file = os.path.join(output_path, "Index.xml")
+            #__import__("IPython").embed()
             s3.download_file(bucket, index_file_key, index_file)
         except botocore.exceptions.ClientError as error:
             print('Index.xml not found. Looking for Index.idx.xml file')
             try:
                 # Attempt to download Index.idx.xml if Index.xml is not found
-                index_file = output_path + "/Index.idx.xml"
+                index_file = output_path + r"/Index.idx.xml"
+                #__import__("IPython").embed()
                 with open(index_file, "wb") as f:
                     index_file_key = index_file_key.replace("Index.xml", "Index.idx.xml")
                     s3.download_fileobj(bucket, index_file_key, f)
@@ -104,7 +111,7 @@ def headless(
     else:
         index_file = glob.glob(f"{index_directory}" + "/*.xml")[0]
     #__import__("IPython").embed()
-    print(index_file)
+    #print(index_file)
     index_file 
 
     handler = content.Handler()
@@ -131,7 +138,7 @@ def headless(
                             path, filename = fullpath.rsplit("/", 1)
                             if filename.endswith(".tiff"):
                                 paths[filename] = path
-                                print(fullpath)
+                                #print(fullpath)
                 except KeyError:
                     print("Listing files in s3 directory failed.")
                     return
@@ -144,7 +151,7 @@ def headless(
         else:
             for filename in os.listdir(index_directory):
                 paths[filename] = index_directory
-        print(paths)
+        #print(paths)
         with open(output, "w") as fd:
             writer = csv.writer(fd, lineterminator="\n")
 
@@ -214,7 +221,7 @@ def headless(
     type=click.Path(exists=False),
 )
 @click.option(
-    "--index-file", help=index_file_help, type=click.Path(exists=True, dir_okay=False)
+    "--index-file", help=index_file_help, type=click.Path(exists=False, dir_okay=False)
 )
 @click.option("--search-subdirectories", help=search_subdirectories_help, is_flag=True)
 @click.option("--illum-only", help=illum_only_help, default=False, is_flag=True)
