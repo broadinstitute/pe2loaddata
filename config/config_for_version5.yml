@@ -5,12 +5,6 @@ channels:
     Alexa 488: OrigER
     488 long: OrigRNA
 channelid:
-    1: OrigER
-    2: OrigAGP
-    3: OrigRNA
-    4: OrigActin
-    5: OrigMito
-    6: OrigDNA
 metadata:
     Row: Row
     Col: Col
