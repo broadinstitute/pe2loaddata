@@ -96,7 +96,7 @@ def headless(
             print('Index.xml not found. Looking for Index.idx.xml file')
             try:
                 # Attempt to download Index.idx.xml if Index.xml is not found
-                index_file = output_path + r"/Index.idx.xml"
+                index_file = os.path.join(output_path, "Index.idx.xml")
                 with open(index_file, "wb") as f:
                     index_file_key = index_file_key.replace("Index.xml", "Index.idx.xml")
                     s3.download_fileobj(bucket, index_file_key, f)
@@ -106,7 +106,8 @@ def headless(
                 return
             
     else:
-        index_file = glob.glob(f"{index_directory}" + "/*.xml")[0]
+        if not index_file:
+            index_file = glob.glob(os.path.join(index_directory,"**.xml"))[0]
     
     handler = content.Handler()
 

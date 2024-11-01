@@ -87,7 +87,10 @@ def load_config(config_file: Union[bytes, str, PathLike]) -> (Any, Any):
 
     channels = config['channels']
 
-    channelid = config['channelid']
+    if "channelid" in config.keys():
+        channelid = config['channelid']
+    else:
+        channelid = ""
 
     metadata = config.get('metadata', {})
 
@@ -210,4 +213,3 @@ def write_csv(writer, images, plates, wells, channels, channelid, metadata, path
                 
                     writer.writerow(row)
 
-    #__import__("IPython").embed()

@@ -71,7 +71,10 @@ def load_config(config_file: Union[bytes, str, PathLike]) -> (Any, Any):
 
     channels = config['channels']
 
-    channelid = config['channelid']
+    if "channelid" in config.keys():
+        channelid = config['channelid']
+    else:
+        channelid = ""
 
     return channels, channelid
 
