@@ -50,7 +50,7 @@ def test_load_config():
 
     assert os.path.exists(pathname)
 
-    channels = load_config(pathname)
+    channels, channelid = load_config(pathname)
 
     expected_channels = {
             "488 long": "OrigRNA",
@@ -87,7 +87,7 @@ def test_main():
     }
 
     assert os.path.exists(config_file)
-    channels = load_config(config_file)
+    channels, channelid = load_config(config_file)
     illum_directory = "tests/data/illum/"
     plate_id = "BR00100044"
 
@@ -98,7 +98,7 @@ def test_main():
 
     with open('illum.csv', 'w') as fd:
         writer = csv.writer(fd, lineterminator='\n')
-        write_csv(writer, channels, illum_directory, plate_id, nrows, illum_filetype)
+        write_csv(writer, channels, channelid, illum_directory, plate_id, nrows, illum_filetype)
     
     os.remove('illum.csv')
 
@@ -109,14 +109,14 @@ def test_write_csv():
 
     nrows = sum(1 for _ in open(input_csv)) - 1
 
-    channels = load_config(config_file)
+    channels, channelid =  load_config(config_file)
     illum_directory = "tests/data/illum/"
     plate_id = "BR00100044"
 
     with open('illum.csv', 'w') as fd:
         writer = csv.writer(fd, lineterminator='\n')
 
-        write_csv(writer, channels, illum_directory, plate_id, nrows, illum_filetype)
+        write_csv(writer, channels, channelid, illum_directory, plate_id, nrows, illum_filetype)
 
     os.remove('illum.csv')
 

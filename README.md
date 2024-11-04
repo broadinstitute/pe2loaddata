@@ -15,7 +15,7 @@ To run CSV creation based on the XML file:
 
 where \<index-directory\> is the directory containing the Index.idx.xml file and the images (any image set that is not complete will not be written to the CSV), config.yml is the LoadData configuration file and output.csv is the CSV that will be generated.
 
-The config.yml file lets you name the channels you want to save and lets you pull metadata out of the image. An example:
+The config.yml file lets you name the channels you want to save and lets you pull metadata out of the image. Based on the version of the `.xml` file, you can choose the `config_for_version5.xml` or `config_for_version6and7.yml` file from the `config` folder. An example of the `config.yml` if one is using the `.xml` file from version 5 of Harmony software:
 
     channels:
         HOECHST 33342: OrigDNA
@@ -23,30 +23,38 @@ The config.yml file lets you name the channels you want to save and lets you pul
         Alexa 647: OrigMito
         Alexa 488: OrigER
         488 long: OrigRNA
+    channelid:
     metadata:
         Row: Row
         Col: Col
         FieldID: FieldID
         PlaneID: PlaneID
         ChannelID: ChannelID
-        ChannelName: ChannelName
-        ImageResolutionX: ImageResolutionX
-        ImageResolutionY: ImageResolutionY
-        ImageSizeX: ImageSizeX
-        ImageSizeY: ImageSizeY
-        BinningX: BinningX
-        BinningY: BinningY
-        MaxIntensity: MaxIntensity
         PositionX: PositionX
         PositionY: PositionY
         PositionZ: PositionZ
         AbsPositionZ: AbsPositionZ
-        AbsTime: AbsTime
-        MainExcitationWavelength: MainExcitationWavelength
-        MainEmissionWavelength: MainEmissionWavelength
-        ObjectiveMagnification: ObjectiveMagnification
-        ObjectiveNA: ObjectiveNA
-        ExposureTime: ExposureTime
+
+An example of the `config.yml` if one is using the `.xml` file from version 6 and 7 of Harmony software:
+
+    channels:
+    channelid:
+        1: OrigER
+        2: OrigAGP
+        3: OrigRNA
+        4: OrigActin
+        5: OrigMito
+        6: OrigDNA
+    metadata:
+        Row: Row
+        Col: Col
+        FieldID: FieldID
+        PlaneID: PlaneID
+        ChannelID: ChannelID
+        PositionX: PositionX
+        PositionY: PositionY
+        PositionZ: PositionZ
+        AbsPositionZ: AbsPositionZ
 
 In the above example, "HOECHST 33342" is the label for the DNA channel and
 if you load the .csv file in LoadData, you will get an image named "DNA" in

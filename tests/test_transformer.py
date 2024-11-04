@@ -54,7 +54,7 @@ def test_load_config():
 
     assert os.path.exists(pathname)
 
-    channels, metadata = load_config(pathname)
+    channels, channelid, metadata = load_config(pathname)
 
     expected_channels = {
         "488 long": "OrigRNA",
@@ -100,7 +100,7 @@ def test_write_csv():
 
     assert os.path.exists(config_file)
 
-    channels, metadata = load_config(config_file)
+    channels, channelid, metadata = load_config(config_file)
 
     channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
 
@@ -124,6 +124,6 @@ def test_write_csv():
     with open("example.csv", "w") as fd:
         writer = csv.writer(fd, lineterminator='\n')
 
-        write_csv(writer, images, plates, wells, channels, metadata, paths)
+        write_csv(writer, images, plates, wells, channels, channelid, metadata, paths)
     
     os.remove("example.csv")

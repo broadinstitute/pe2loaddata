@@ -1,5 +1,6 @@
 import csv
 import os
+import glob
 import shutil
 import tempfile
 import xml.sax
@@ -59,43 +60,55 @@ def headless(
     sub_string_out="",
     sub_string_in="",
 ):
-    channels, metadata = transformer.load_config(configuration)
+    channels, channelid, metadata = transformer.load_config(configuration)
 
     output_path = os.path.dirname(output)
+    #
+    #print(output_path,"output_path")
     if not output_path == "":
         if not os.path.exists(output_path):
             os.makedirs(output_path)  
 
     # Strip spaces because XML parser is broken
-    channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
+    if channels != '':
+        channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
 
-    if not index_file:
-        index_file = os.path.join(index_directory, "Index.idx.xml")
-
-    if "s3" in index_file:
+           
+    if "s3" in index_directory:
         remote = True
         if not index_directory:
             print(
                 "You must also set the --index_directory to use an index_file on S3."
             )
             return
+        if not index_file:
+            index_file = os.path.join(index_directory,"Index.xml")
         import boto3
         import botocore
 
         s3 = boto3.client("s3")
         # Download index file to output directory
-        bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
-        index_file = output_path + "/Index.idx.xml"
-        with open(index_file, "wb") as f:
+        try:
+            bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
+            index_file = os.path.join(output_path, "Index.xml")
+            s3.download_file(bucket, index_file_key, index_file)
+        except botocore.exceptions.ClientError as error:
+            print('Index.xml not found. Looking for Index.idx.xml file')
             try:
-                s3.download_fileobj(bucket, index_file_key, f)
+                # Attempt to download Index.idx.xml if Index.xml is not found
+                index_file = os.path.join(output_path, "Index.idx.xml")
+                with open(index_file, "wb") as f:
+                    index_file_key = index_file_key.replace("Index.xml", "Index.idx.xml")
+                    s3.download_fileobj(bucket, index_file_key, f)
             except botocore.exceptions.ClientError as error:
-                print(
-                    "Can't download the xml file. Check file location and permissions."
-                )
+                print('Index.idx.xml not found') #have to add better print statements
                 print(f"Looking for index_file at {index_file_key}")
                 return
-
+            
+    else:
+        if not index_file:
+            index_file = glob.glob(os.path.join(index_directory,"**.xml"))[0]
+    
     handler = content.Handler()
 
     xml.sax.parse(index_file, handler)
@@ -105,7 +118,6 @@ def headless(
     wells = handler.root.wells.wells
 
     paths = {}  
-
     if not illum_only:
         if search_subdirectories:
             if remote:
@@ -120,6 +132,7 @@ def headless(
                             path, filename = fullpath.rsplit("/", 1)
                             if filename.endswith(".tiff"):
                                 paths[filename] = path
+                                
                 except KeyError:
                     print("Listing files in s3 directory failed.")
                     return
@@ -132,7 +145,7 @@ def headless(
         else:
             for filename in os.listdir(index_directory):
                 paths[filename] = index_directory
-
+        
         with open(output, "w") as fd:
             writer = csv.writer(fd, lineterminator="\n")
 
@@ -142,6 +155,7 @@ def headless(
                 plates,
                 wells,
                 channels,
+                channelid,
                 metadata,
                 paths,
                 sub_string_out,
@@ -172,6 +186,7 @@ def headless(
                 append_illum_cols.write_csv(
                     illumwriter,
                     channels,
+                    channelid,
                     illum_directory,
                     plate_id,
                     nrows,
@@ -197,10 +212,10 @@ def headless(
     "--index-directory",
     default=os.path.curdir,
     help=index_directory_help,
-    type=click.Path(exists=True),
+    type=click.Path(exists=False),
 )
 @click.option(
-    "--index-file", help=index_file_help, type=click.Path(exists=True, dir_okay=False)
+    "--index-file", help=index_file_help, type=click.Path(exists=False, dir_okay=False)
 )
 @click.option("--search-subdirectories", help=search_subdirectories_help, is_flag=True)
 @click.option("--illum-only", help=illum_only_help, default=False, is_flag=True)
@@ -258,4 +273,5 @@ def main(
         sub_string_out,
         sub_string_in,
     )
+
 
