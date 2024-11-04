@@ -1,0 +1,17 @@
+channels:
+    HOECHST 33342: OrigDNA
+    Alexa 568: OrigAGP
+    Alexa 647: OrigMito
+    Alexa 488: OrigER
+    488 long: OrigRNA
+channelid:
+metadata:
+    Row: Row
+    Col: Col
+    FieldID: FieldID
+    PlaneID: PlaneID
+    ChannelID: ChannelID
+    PositionX: PositionX
+    PositionY: PositionY
+    PositionZ: PositionZ
+    AbsPositionZ: AbsPositionZ
