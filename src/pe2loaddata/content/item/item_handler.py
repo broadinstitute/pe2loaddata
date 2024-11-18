@@ -57,10 +57,7 @@ class ItemHandler(xml.sax.handler.ContentHandler):
 
     @property
     def channel_id(self):
-        """The channel name
-
-        Strip out spaces in the channel name because XML parser seems to
-        be broken
+        """The integer channel id
         """
         channel = self.metadata["ChannelID"]
         return channel.replace(" ", "")
