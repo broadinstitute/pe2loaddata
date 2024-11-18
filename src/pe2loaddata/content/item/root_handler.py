@@ -1,4 +1,4 @@
-from . import plates_handler, wells_handler, item_handler, images_handler
+from . import maps_handler, plates_handler, wells_handler, item_handler, images_handler
 
 
 class RootHandler(item_handler.ItemHandler):
@@ -7,6 +7,7 @@ class RootHandler(item_handler.ItemHandler):
         self.images = None
         self.plates = None
         self.wells = None
+        self.maps = None
 
     def onEndElement(self, child, name):
         if name == "Images":
@@ -15,6 +16,8 @@ class RootHandler(item_handler.ItemHandler):
             self.plates = child
         elif name == "Wells":
             self.wells = child
+        elif name == "Maps":
+            self.maps = child
         else:
             item_handler.ItemHandler.onEndElement(self, child, name)
 
@@ -25,5 +28,7 @@ class RootHandler(item_handler.ItemHandler):
             return wells_handler.WellsHandler
         elif name == "Images":
             return images_handler.ImagesHandler
+        elif name == "Maps":
+            return maps_handler.MapsHandler
         else:
             return item_handler.ItemHandler.get_class_for_name(self, name)

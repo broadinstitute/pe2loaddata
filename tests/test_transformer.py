@@ -113,6 +113,7 @@ def test_write_csv():
     images = handler.root.images.images
     plates = handler.root.plates.plates
     wells = handler.root.wells.wells
+    maps = handler.root.maps.map_dict
 
     paths = {}
 
@@ -124,6 +125,6 @@ def test_write_csv():
     with open("example.csv", "w") as fd:
         writer = csv.writer(fd, lineterminator='\n')
 
-        write_csv(writer, images, plates, wells, channels, metadata, paths)
+        write_csv(writer, images, plates, wells, maps, channels, metadata, paths)
     
     os.remove("example.csv")

@@ -1,4 +1,5 @@
 import csv
+import glob
 import os
 import shutil
 import tempfile
@@ -70,7 +71,7 @@ def headless(
     channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
 
     if not index_file:
-        index_file = os.path.join(index_directory, "Index.idx.xml")
+        index_file = glob.glob(os.path.join(index_directory, "Index*xml"))[0]
 
     if "s3" in index_file:
         remote = True
@@ -85,7 +86,7 @@ def headless(
         s3 = boto3.client("s3")
         # Download index file to output directory
         bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
-        index_file = output_path + "/Index.idx.xml"
+        index_file = os.path.join(output_path, index_file.split("/",-1))
         with open(index_file, "wb") as f:
             try:
                 s3.download_fileobj(bucket, index_file_key, f)
@@ -103,6 +104,7 @@ def headless(
     images = handler.root.images.images
     plates = handler.root.plates.plates
     wells = handler.root.wells.wells
+    maps = handler.root.maps.map_dict
 
     paths = {}  
 
@@ -141,6 +143,7 @@ def headless(
                 images,
                 plates,
                 wells,
+                maps,
                 channels,
                 metadata,
                 paths,
@@ -259,3 +262,6 @@ def main(
         sub_string_in,
     )
 
+
+if __name__ == "__main__":
+    main()

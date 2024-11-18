@@ -92,7 +92,7 @@ def load_config(config_file: Union[bytes, str, PathLike]) -> (Any, Any):
     return channels, metadata
 
 
-def write_csv(writer, images, plates, wells, channels, metadata, paths, sub_string_out='', sub_string_in=''):
+def write_csv(writer, images, plates, wells, maps, channels, metadata, paths, sub_string_out='', sub_string_in=''):
     header = sum([["_".join((prefix, channels[channel])) for prefix in ["FileName", "PathName"]] for channel in sorted(channels.keys())], [])
 
     header += ["Metadata_Plate", "Metadata_Well", "Metadata_Site"]
@@ -120,7 +120,10 @@ def write_csv(writer, images, plates, wells, channels, metadata, paths, sub_stri
                     # writing out field_id.
                     field_id = '%02d-%02d' % (int(image.metadata["FieldID"]), int(image.metadata.get("PlaneID", 1)))
 
-                    channel = image.channel_name
+                    if image.channel_name:
+                        channel = image.channel_name
+                    else:
+                        channel = maps[str(image.channel_id)]['ChannelName'].replace(" ","")
 
                     assert channel in channels
 
