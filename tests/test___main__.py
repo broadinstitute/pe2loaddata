@@ -3,15 +3,14 @@ import click.testing
 import src.pe2loaddata.__main__
 
 
-def test_with_file():
+def test_with_file(test_files):
     runner = click.testing.CliRunner()
 
     command = src.pe2loaddata.__main__.main
-
     result = runner.invoke(command, [
-        "tests/data/config.yml",
+        test_files["config_file"],
         "--index-file",
-        "tests/data/images/Index.idx.xml",
+        test_files["index_file"],
         "test.csv"
 
     ])
@@ -20,23 +19,23 @@ def test_with_file():
 
     os.remove("test.csv")
 
-def test_with_directory():
+def test_with_directory(test_files):
     runner = click.testing.CliRunner()
 
     command = src.pe2loaddata.__main__.main
 
     result = runner.invoke(command, [
-        "tests/data/config.yml",
+        test_files["config_file"],
         "--index-directory",
-        "tests/data/images/",
+        test_files["index_directory"],
         "test.csv"
     ])
     assert result.exit_code == 0
 
     os.remove("test.csv")
 
-def test_with_import():
+def test_with_import(test_files):
     assert not os.path.exists("test.csv")
-    src.pe2loaddata.__main__.headless("tests/data/config.yml","test.csv",index_file="tests/data/images/Index.idx.xml",index_directory=os.curdir)
+    src.pe2loaddata.__main__.headless(test_files["config_file"],"test.csv",index_file=test_files["index_file"],index_directory=test_files["index_directory"])
     assert os.path.exists("test.csv")
     os.remove("test.csv")

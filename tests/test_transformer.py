@@ -49,21 +49,14 @@ def test_parse_args():
     pass
 
 
-def test_load_config():
-    pathname = "./tests/data/config.yml"
+def test_load_config(test_files):
+    pathname = test_files["config_file"]
 
     assert os.path.exists(pathname)
 
     channels, metadata = load_config(pathname)
 
-    expected_channels = {
-        "488 long": "OrigRNA",
-        "Alexa 488": "OrigER",
-        "Alexa 568": "OrigAGP",
-        "Alexa 647": "OrigMito",
-        "HOECHST 33342": "OrigDNA",
-        "Brightfield": "OrigBrightfield"
-    }
+    expected_channels = test_files["expected_channels"]
 
     expected_metadata = {
         "AbsPositionZ": "AbsPositionZ",
@@ -95,8 +88,8 @@ def test_load_config():
     assert metadata == expected_metadata
 
 
-def test_write_csv():
-    config_file = "./tests/data/config.yml"
+def test_write_csv(test_files):
+    config_file = test_files["config_file"]
 
     assert os.path.exists(config_file)
 
@@ -104,7 +97,7 @@ def test_write_csv():
 
     channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
 
-    index_file = "./tests/data/images/Index.idx.xml"
+    index_file = test_files["index_file"]
 
     handler = Handler()
 
@@ -117,7 +110,7 @@ def test_write_csv():
 
     paths = {}
 
-    index_directory = "./tests/data/images"
+    index_directory = test_files["index_directory"]
 
     for filename in os.listdir(index_directory):
         paths[filename] = index_directory
@@ -126,5 +119,20 @@ def test_write_csv():
         writer = csv.writer(fd, lineterminator='\n')
 
         write_csv(writer, images, plates, wells, maps, channels, metadata, paths)
+
+    gt = []
+    created = []
+
+    with open(test_files["output_file"]) as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            gt.append(row)
+
+    with open("example.csv") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            created.append(row)
+
+    assert gt == created
     
     os.remove("example.csv")
