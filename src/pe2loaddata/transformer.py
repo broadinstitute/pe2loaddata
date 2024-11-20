@@ -121,9 +121,14 @@ def write_csv(writer, images, plates, wells, maps, channels, metadata, paths, su
                     field_id = '%02d-%02d' % (int(image.metadata["FieldID"]), int(image.metadata.get("PlaneID", 1)))
 
                     if image.channel_name:
+                        # Older version file, all metadata already attached to the image
                         channel = image.channel_name
                     else:
+                        # Newer version file, need to concatenate metadata on
                         channel = maps[str(image.channel_id)]['ChannelName'].replace(" ","")
+                        for key in sorted(metadata.keys()):
+                            if key not in image.metadata.keys():
+                                image.metadata[key] = maps[str(image.channel_id)][key]
 
                     assert channel in channels
 
