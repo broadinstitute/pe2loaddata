@@ -49,5 +49,15 @@ class ItemHandler(xml.sax.handler.ContentHandler):
         Strip out spaces in the channel name because XML parser seems to
         be broken
         """
-        channel = self.metadata["ChannelName"]
-        return channel.replace(" ", "")
+        try:
+            channel = self.metadata["ChannelName"]
+            return channel.replace(" ", "")
+        except:
+            return False
+
+    @property
+    def channel_id(self):
+        """The integer channel id
+        """
+        channel = self.metadata["ChannelID"]
+        return channel

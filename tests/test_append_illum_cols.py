@@ -45,21 +45,14 @@ def test_check_dir_arg():
     except ArgumentTypeError:
         assert True
 
-def test_load_config():
-    pathname = "./tests/data/config.yml"
+def test_load_config(test_files):
+    pathname = test_files["config_file"]
 
     assert os.path.exists(pathname)
 
     channels = load_config(pathname)
 
-    expected_channels = {
-            "488 long": "OrigRNA",
-            "Alexa 488": "OrigER",
-            "Alexa 568": "OrigAGP",
-            "Alexa 647": "OrigMito",
-            "HOECHST 33342": "OrigDNA",
-            "Brightfield": "OrigBrightfield"
-    }
+    expected_channels = test_files["expected_channels"]
 
     assert channels == expected_channels
 
@@ -69,27 +62,18 @@ def test_parse_args():
     pass
 
 
-def test_main():
-    config_file = "./tests/data/config.yml"
-    input_csv = "./tests/data/load_data.csv"
-    illum_filetype = ".mat"
+def test_main(test_files):
+    config_file = test_files["config_file"]
+    input_csv = test_files["output_file"]
+    illum_filetype = ".npy"
     nrows = sum(1 for _ in open(input_csv)) - 1
 
-
-
-    expected_channels = {
-        "488 long": "OrigRNA",
-        "Alexa 488": "OrigER",
-        "Alexa 568": "OrigAGP",
-        "Alexa 647": "OrigMito",
-        "HOECHST 33342": "OrigDNA",
-        "Brightfield": "OrigBrightfield"
-    }
+    expected_channels = test_files["expected_channels"]
 
     assert os.path.exists(config_file)
     channels = load_config(config_file)
     illum_directory = "tests/data/illum/"
-    plate_id = "BR00100044"
+    plate_id = "BR00121482"
 
     assert nrows !=  {}
     assert channels == expected_channels
@@ -102,16 +86,16 @@ def test_main():
     
     os.remove('illum.csv')
 
-def test_write_csv():
-    config_file = "./tests/data/config.yml"
-    input_csv = "tests/data/load_data.csv"
-    illum_filetype = ".mat"
+def test_write_csv(test_files):
+    config_file = test_files["config_file"]
+    input_csv = test_files["output_file"]
+    illum_filetype = ".npy"
 
     nrows = sum(1 for _ in open(input_csv)) - 1
 
     channels = load_config(config_file)
     illum_directory = "tests/data/illum/"
-    plate_id = "BR00100044"
+    plate_id = "BR00121482"
 
     with open('illum.csv', 'w') as fd:
         writer = csv.writer(fd, lineterminator='\n')
