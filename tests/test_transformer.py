@@ -136,3 +136,67 @@ def test_write_csv(test_files):
     assert gt == created
     
     os.remove("example.csv")
+
+def test_write_csv_from_remote():
+    config_file = "tests/data/Remote/config_s3test.yml"
+
+    assert os.path.exists(config_file)
+
+    channels, metadata = load_config(config_file)
+
+    channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
+
+    index_directory = "s3://cellpainting-gallery/cpg0001-cellpainting-protocol/source_4/images/2020_06_19_Stain2_Batch1/images/BR00113255__2020-06-19T11_13_27-Measurement2/Images/"
+    index_file = "s3://cellpainting-gallery/cpg0001-cellpainting-protocol/source_4/images/2020_06_19_Stain2_Batch1/images/BR00113255__2020-06-19T11_13_27-Measurement2/Images/Index.idx.xml"
+
+    import boto3
+    s3 = boto3.client("s3")
+    # Download index file to output directory
+    bucket, index_file_key = index_file.split(f"s3://")[1].split("/",1)
+    index_file = "Index.idx.xml"
+    with open(index_file, "wb") as f:
+        s3.download_fileobj(bucket, index_file_key, f)
+
+    handler = Handler()
+
+    xml.sax.parse(index_file, handler)
+
+    images = handler.root.images.images
+    plates = handler.root.plates.plates
+    wells = handler.root.wells.wells
+    maps = handler.root.maps.map_dict
+
+    paths = {}
+
+    index_directory_key = index_directory.split(f"s3://{bucket}/")[1]
+    paginator = s3.get_paginator("list_objects_v2")
+    pages = paginator.paginate(Bucket=bucket, Prefix=index_directory_key)
+    for page in pages:
+        for x in page["Contents"]:
+            fullpath = x["Key"]
+            path, filename = fullpath.rsplit("/", 1)
+            if filename.endswith(".tiff"):
+                paths[filename] = path
+
+    with open("example.csv", "w") as fd:
+        writer = csv.writer(fd, lineterminator='\n')
+
+        write_csv(writer, images, plates, wells, maps, channels, metadata, paths)
+
+    gt = []
+    created = []
+
+    with open("tests/data/Remote/loaddata_cpg.csv") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            gt.append(row)
+
+    with open("example.csv") as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            created.append(row)
+
+    assert gt == created
+    
+    os.remove("Index.idx.xml")
+    os.remove("example.csv")
