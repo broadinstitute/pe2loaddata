@@ -1,5 +1,6 @@
 # pe2loaddata
-Script to parse a Phenix metadata XML file and generate a .CSV for CellProfiler's loaddata module
+Script to parse a Phenix metadata XML file and generate a .CSV for CellProfiler's loaddata module.
+Supports XML files made by Harmony versions V5 and V7.
 
 To install: 
 
@@ -13,7 +14,7 @@ To run CSV creation based on the XML file:
 
     pe2loaddata --index-directory <index-directory> config.yml output.csv
 
-where \<index-directory\> is the directory containing the Index.idx.xml file and the images (any image set that is not complete will not be written to the CSV), config.yml is the LoadData configuration file and output.csv is the CSV that will be generated.
+where \<index-directory\> is the directory containing the Index.idx.xml or Index.xml file and the images (any image set that is not complete will not be written to the CSV), config.yml is the LoadData configuration file and output.csv is the CSV that will be generated.
 
 The config.yml file lets you name the channels you want to save and lets you pull metadata out of the image. An example:
 
