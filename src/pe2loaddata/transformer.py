@@ -91,13 +91,50 @@ def load_config(config_file: Union[bytes, str, PathLike]) -> (Any, Any):
 
     return channels, metadata
 
+def metadata_adjust_image(image, maps, metadata):
+    if image.channel_name:
+        return image
+    else:
+        image.channel_name = maps[str(image.channel_id)]['ChannelName'].replace(" ","")
+        for key in sorted(metadata.keys()):
+            if key not in image.metadata.keys():
+                image.metadata[key] = maps[str(image.channel_id)][key]
+        return image
+
+def make_row_metadata(dict_of_images, channels, requested_metadata):
+    final_metadata = {}
+    temp_metadata = {}
+    for channel in channels.keys():
+        image = dict_of_images[channel]
+        for key in requested_metadata:
+            if key not in temp_metadata:
+                temp_metadata[key] = { channel: image.metadata[key]}
+            else:
+                temp_metadata[key][channel] = image.metadata[key]
+    for k,v in temp_metadata.items():
+        all_values = list(set([channelval for channel, channelval in v.items()]))
+        if len(all_values) == 1:
+            final_metadata[k] = all_values[0]
+        else:
+            for channel in channels.keys():
+                final_metadata[f"{k}_{channels[channel]}"] = v[channel]
+    return final_metadata
 
 def write_csv(writer, images, plates, wells, maps, channels, metadata, paths, sub_string_out='', sub_string_in=''):
     header = sum([["_".join((prefix, channels[channel])) for prefix in ["FileName", "PathName"]] for channel in sorted(channels.keys())], [])
 
     header += ["Metadata_Plate", "Metadata_Well", "Metadata_Site"]
 
-    header += ["_".join(("Metadata", metadata[key])) for key in sorted(metadata.keys())]
+    #we need to actually process one well to figure out what's the metadata to return
+    sample_well = wells[list(wells.keys())[0]]
+    sample_well_images = {}
+    for image_id in sample_well.image_ids:
+        image = metadata_adjust_image(images[image_id], maps, metadata)
+        sample_well_images[image.channel_name] = image
+
+    adjusted_metadata = make_row_metadata(sample_well_images, channels, sorted(metadata.keys()))
+
+    header += ["_".join(("Metadata", key)) for key in adjusted_metadata]
 
     writer.writerow(header)
 
@@ -113,22 +150,14 @@ def write_csv(writer, images, plates, wells, maps, channels, metadata, paths, su
 
             for image_id in well.image_ids:
                 try:
-                    image = images[image_id]
+                    image = metadata_adjust_image(images[image_id], maps, metadata)
 
                     # For simplifying the code, field_id is defined as the combination of
                     # FieldID and PlaneID. Later, PlaneID is stripped out when actually
                     # writing out field_id.
                     field_id = '%02d-%02d' % (int(image.metadata["FieldID"]), int(image.metadata.get("PlaneID", 1)))
 
-                    if image.channel_name:
-                        # Older version file, all metadata already attached to the image
-                        channel = image.channel_name
-                    else:
-                        # Newer version file, need to concatenate metadata on
-                        channel = maps[str(image.channel_id)]['ChannelName'].replace(" ","")
-                        for key in sorted(metadata.keys()):
-                            if key not in image.metadata.keys():
-                                image.metadata[key] = maps[str(image.channel_id)][key]
+                    channel = image.channel_name
 
                     assert channel in channels
 
@@ -165,8 +194,10 @@ def write_csv(writer, images, plates, wells, maps, channels, metadata, paths, su
                 # strip out the PlaneID from field before writing the row
                 row += [plate_name, well_name, str(int(field[:2]))]
 
-                for key in sorted(metadata.keys()):
-                    row.append(image.metadata[key])
+                adjusted_metadata = make_row_metadata(d, channels, sorted(metadata.keys()))
+
+                for _, value in adjusted_metadata.items():
+                    row.append(value)
 
                 if sub_string_in != '' and sub_string_out != '':
                     row = [x.replace(sub_string_out,sub_string_in) for x in row]
