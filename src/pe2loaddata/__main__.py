@@ -59,6 +59,7 @@ def headless(
     illum_output=False,
     sub_string_out="",
     sub_string_in="",
+    remote=False,
 ):
     channels, metadata = transformer.load_config(configuration)
 
