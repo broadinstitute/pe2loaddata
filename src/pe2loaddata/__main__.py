@@ -62,6 +62,8 @@ def headless(
 ):
     channels, metadata = transformer.load_config(configuration)
 
+    remote = False
+    
     output_path = os.path.dirname(output)
     if not output_path == "":
         if not os.path.exists(output_path):
