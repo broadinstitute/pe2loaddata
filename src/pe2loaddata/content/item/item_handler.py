@@ -55,6 +55,10 @@ class ItemHandler(xml.sax.handler.ContentHandler):
         except:
             return False
 
+    @channel_name.setter
+    def channel_name(self,channel_name):
+        self.__channel_name = channel_name
+
     @property
     def channel_id(self):
         """The integer channel id
