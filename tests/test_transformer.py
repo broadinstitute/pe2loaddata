@@ -115,7 +115,7 @@ def test_write_csv(test_files):
     for filename in os.listdir(index_directory):
         paths[filename] = index_directory
 
-    with open("example.csv", "w") as fd:
+    with open(test_files["created_file"], "w") as fd:
         writer = csv.writer(fd, lineterminator='\n')
 
         write_csv(writer, images, plates, wells, maps, channels, metadata, paths)
@@ -128,14 +128,14 @@ def test_write_csv(test_files):
         for row in reader:
             gt.append(row)
 
-    with open("example.csv") as csvfile:
+    with open(test_files["created_file"]) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             created.append(row)
 
     assert gt == created
     
-    os.remove("example.csv")
+    os.remove(test_files["created_file"])
 
 def test_write_csv_from_remote():
     config_file = "tests/data/Remote/config_s3test.yml"
@@ -178,7 +178,7 @@ def test_write_csv_from_remote():
             if filename.endswith(".tiff"):
                 paths[filename] = path
 
-    with open("example.csv", "w") as fd:
+    with open("remote_example.csv", "w") as fd:
         writer = csv.writer(fd, lineterminator='\n')
 
         write_csv(writer, images, plates, wells, maps, channels, metadata, paths)
@@ -191,7 +191,7 @@ def test_write_csv_from_remote():
         for row in reader:
             gt.append(row)
 
-    with open("example.csv") as csvfile:
+    with open("remote_example.csv") as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             created.append(row)
@@ -199,4 +199,4 @@ def test_write_csv_from_remote():
     assert gt == created
     
     os.remove("Index.idx.xml")
-    os.remove("example.csv")
+    os.remove("remote_example.csv")
