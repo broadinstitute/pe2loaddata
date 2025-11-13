@@ -152,10 +152,8 @@ def write_csv(writer, images, plates, wells, maps, channels, metadata, paths, su
                 try:
                     image = metadata_adjust_image(images[image_id], maps, metadata)
 
-                    # For simplifying the code, field_id is defined as the combination of
-                    # FieldID and PlaneID. Later, PlaneID is stripped out when actually
-                    # writing out field_id.
-                    field_id = '%02d-%02d' % (int(image.metadata["FieldID"]), int(image.metadata.get("PlaneID", 1)))
+                    # We use a combination of FieldID, PlaneID, and TimepointID to guarantee getting all images from multi-Z and multi-T experiments
+                    field_id = '%02d-%02d-%02d' % (int(image.metadata["FieldID"]), int(image.metadata.get("PlaneID", 1)), int(image.metadata.get("TimepointID", 1)))
 
                     channel = image.channel_name
 
@@ -191,7 +189,7 @@ def write_csv(writer, images, plates, wells, maps, channels, metadata, paths, su
                 if not row:
                     continue
 
-                # strip out the PlaneID from field before writing the row
+                # strip out the PlaneID and TimepointID from field before writing the row
                 row += [plate_name, well_name, str(int(field[:2]))]
 
                 adjusted_metadata = make_row_metadata(d, channels, sorted(metadata.keys()))
