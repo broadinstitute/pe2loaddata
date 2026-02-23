@@ -190,7 +190,7 @@ def write_csv(writer, images, plates, wells, maps, channels, metadata, paths, su
                     continue
 
                 # strip out the PlaneID and TimepointID from field before writing the row
-                row += [plate_name, well_name, str(int(field[:2]))]
+                row += [plate_name, well_name, str(int(field.split('-')[0]))]
 
                 adjusted_metadata = make_row_metadata(d, channels, sorted(metadata.keys()))
 
