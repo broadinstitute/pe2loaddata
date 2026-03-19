@@ -174,10 +174,8 @@ def write_csv(writer, images, plates, wells, maps, channels, metadata, paths, su
                     try:
                         image = d[channel]
 
-                        # file_name = image.metadata["URL"]
-
                         full_url = image.metadata["URL"] 
-                        file_name = os.path.basename(full_url)
+                        file_name = os.path.basename(full_url)  # in case the URL includes a subdirectory, we only want the image file name
 
                         row += [file_name, paths[file_name]]
                     except Exception as e:
