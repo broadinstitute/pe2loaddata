@@ -1,5 +1,5 @@
 import xml.sax.handler
-
+import string
 
 class ItemHandler(xml.sax.handler.ContentHandler):
     """Ignore all content until endElement"""
@@ -40,7 +40,11 @@ class ItemHandler(xml.sax.handler.ContentHandler):
         """
         row = int(self.metadata["Row"])
         col = int(self.metadata["Col"])
-        return chr(ord('A') + row - 1) + ("%02d" % col)
+        row_str = string.ascii_uppercase[(row - 1) % 26]
+        if row > 26:
+            import math
+            row_str = string.ascii_uppercase[math.floor(row/26) -1] + row_str
+        return row_str + ("%02d" % col)
 
     @property
     def channel_name(self):
