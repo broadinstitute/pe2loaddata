@@ -14,7 +14,7 @@ To run CSV creation based on the XML file:
 
     pe2loaddata --index-directory <index-directory> config.yml output.csv
 
-where \<index-directory\> is the directory containing the Index.idx.xml or Index.xml file and the images (any image set that is not complete will not be written to the CSV), config.yml is the LoadData configuration file and output.csv is the CSV that will be generated.
+where \<index-directory\> is the directory containing the Index.idx.xml, Index.xml, or index.xml file and the images (any image set that is not complete will not be written to the CSV), config.yml is the LoadData configuration file and output.csv is the CSV that will be generated.
 
 The config.yml file lets you name the channels you want to save and lets you pull metadata out of the image. An example (note that the first 6 metadata parameters should all minimally be included, and we strongly recommend keeping all parameters listed below):
 
@@ -55,7 +55,7 @@ your image set.
 
 The metadata section selects items out of the image metadata and allows
 you to rename them as metadata. In addition, pe2loaddata automatically
-populates the plate, well and site metadata entriess.
+populates the plate, well and site metadata entries.
 
 pe2loaddata now supports experiments with multiple planes per field as long as the `PlaneID` field 
 has been set in the config file.
