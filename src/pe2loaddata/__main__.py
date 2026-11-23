@@ -20,7 +20,7 @@ the Phenix index XML metadata file. If on s3, use full s3 URI, starting with 's3
 """
 
 search_subdirectories_help = """
-Look for image files in the index-directory and subdirectories. Default is false; set to true if files are on s3.
+Look for image files in the index-directory and subdirectories. Default is false; set to true if files are on s3 OR in per-well subfolders.
 """
 
 illum_only_help = """
@@ -73,7 +73,10 @@ def headless(
     channels = dict([(str(k).replace(" ", ""), v) for (k, v) in channels.items()])
 
     if not index_file:
-        index_file = glob.glob(os.path.join(index_directory, "Index*xml"))[0]
+        if not search_subdirectories:
+            index_file = glob.glob(os.path.join(index_directory, "*ndex*xml"))[0]
+        else:
+            index_file = glob.glob(os.path.join(index_directory, "**/*ndex*xml"),recursive=True)[0]
 
     if "s3" in index_file:
         remote = True
@@ -101,7 +104,11 @@ def headless(
 
     handler = content.Handler()
 
-    xml.sax.parse(index_file, handler)
+    # Reading as a string seems to handle better the current syntax
+    with open(index_file,'r') as i_f:
+        index_file_string = i_f.read()
+    
+    xml.sax.parseString(index_file_string, handler)
 
     images = handler.root.images.images
     plates = handler.root.plates.plates
@@ -129,11 +136,15 @@ def headless(
                     return
                 os.remove(index_file)
             else:
+                if index_directory == '.' and os.path.dirname(index_file)!=index_directory:
+                    index_directory = os.path.dirname(index_file)
                 for dir_root, directories, filenames in os.walk(index_directory):
                     for filename in filenames:
                         if filename.endswith(".tiff"):
                             paths[filename] = dir_root
         else:
+            if index_directory == '.' and os.path.dirname(index_file)!=index_directory:
+                index_directory = os.path.dirname(index_file)
             for filename in os.listdir(index_directory):
                 paths[filename] = index_directory
 
